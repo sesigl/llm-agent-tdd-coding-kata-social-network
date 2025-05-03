@@ -20,6 +20,11 @@ your company might be go fast in the early stages, but will slow down as the cod
 
 This can be addressed by using TDD to provide from the beginning long-living executable guardrails. That's nothing new, but the question is if LLMs can accelerate engineers so we get the best of both worlds.
 
+## The tooling
+
+To make TDD more strict and comparable, a technique [test-commit-revert](https://nvoulgaris.com/test-commit-revert/) is used. This gives us a more strict ruleset how to do TDD, but also
+allows us to do more analysis comparing development with and without agentic help. 
+
 ## The Kata
 
 Source: https://kata-log.rocks/social-network-kata
