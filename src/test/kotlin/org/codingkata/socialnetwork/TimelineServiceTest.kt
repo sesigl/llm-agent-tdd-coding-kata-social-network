@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 class TimelineServiceTest {
 
     @Test
-    fun example() {
+    fun `alice can publish messages to a personal timeline`() {
         val timelineService = TimelineService()
         timelineService.publishMessage(
             messageContent = "Happy coding",
