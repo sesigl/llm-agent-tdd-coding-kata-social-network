@@ -115,9 +115,8 @@ while true; do
   elif [[ $key == "f" || $key == "F" ]]; then
     # just run tests, no git actions
     echo "Running tests only (no commit/revert)..."
-    mvn clean test
+    mvn clean test || true
   else
     echo "Unrecognized key '$key' – please press Enter or f."
   fi
 done
-
