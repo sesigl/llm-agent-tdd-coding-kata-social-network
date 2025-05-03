@@ -83,15 +83,18 @@ while true; do
       git add -A
       ADDED_CODE=$(git diff --cached)
       log_debug "Diff content: $ADDED_CODE"
+
       if [ -n "$ADDED_CODE" ]; then
         SUMMARY=$(summarize_code "$ADDED_CODE") || SUMMARY=""
         SUMMARY=${SUMMARY:-"No summary from API"}
         COMMIT_MSG="[TCR] $SUMMARY"
+        log_debug "Commit message: $COMMIT_MSG"
+        git commit -m "$COMMIT_MSG"
       else
-        COMMIT_MSG="[TCR] No code changes detected."
+        echo "No code changes detected. Keeping going..."
+        continue
       fi
-      log_debug "Commit message: $COMMIT_MSG"
-      git commit -m "$COMMIT_MSG"
+
     else
       echo "Tests failed. Reverting to last commit..."
       FAIL_DIFF=$(git diff)
@@ -117,3 +120,4 @@ while true; do
     echo "Unrecognized key '$key' – please press Enter or f."
   fi
 done
+
