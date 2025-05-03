@@ -80,6 +80,7 @@ while true; do
     echo "Running tests..."
     # capture maven output with colors (force ANSI) while printing live
     TMP_OUT=$(mktemp)
+    TEST_OUTPUT=""  # Initialize to avoid unbound variable
     if mvn -Dstyle.color=always clean test 2>&1 | tee "$TMP_OUT"; then
       TEST_OUTPUT=$(cat "$TMP_OUT"); rm "$TMP_OUT"
       echo "Tests passed. Preparing commit..."
@@ -99,6 +100,7 @@ while true; do
       fi
 
     else
+      TEST_OUTPUT=$(cat "$TMP_OUT" 2>/dev/null || true); rm -f "$TMP_OUT"
       # on failure, Maven output already printed by tee
       FAIL_DIFF=$(git diff)
       log_debug "Diff content: $FAIL_DIFF"
