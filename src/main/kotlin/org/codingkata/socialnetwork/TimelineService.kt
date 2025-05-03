@@ -1,14 +1,13 @@
 package org.codingkata.socialnetwork
 
-class TimelineService {
-    private var timelines: MutableMap<String, Timeline> = mutableMapOf()
-
+class TimelineService (
+    private val timelineRepository: TimelineRepository = TimelineRepository()
+){
     fun publishMessage(messageContent: String, userId: String) {
-        timelines.getOrPut(userId, { Timeline() })
-            .publishMessage(messageContent)
+        timelineRepository.findBy(userId).publishMessage(messageContent)
     }
 
     fun getAllMessages(userId: String): List<String> {
-        return timelines.getOrPut(userId, { Timeline() }).getAllMessages()
+        return timelineRepository.findBy(userId).getAllMessages()
     }
 }
