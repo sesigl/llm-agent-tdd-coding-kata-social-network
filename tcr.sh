@@ -78,7 +78,9 @@ while true; do
   if [[ $key == "" ]]; then
     # full TCR cycle
     echo "Running tests..."
-    if mvn clean test; then
+    # capture maven output
+    if TEST_OUTPUT=$(mvn clean test 2>&1); then
+      echo "$TEST_OUTPUT"
       echo "Tests passed. Preparing commit..."
       git add -A
       ADDED_CODE=$(git diff --cached)
@@ -96,11 +98,16 @@ while true; do
       fi
 
     else
+      # on failure, show and log maven output
+      echo "$TEST_OUTPUT"
       echo "Tests failed. Reverting to last commit..."
       FAIL_DIFF=$(git diff)
       log_debug "Diff content: $FAIL_DIFF"
+
       if [ -n "$FAIL_DIFF" ]; then
-        RESET_SUMMARY=$(summarize_code "$FAIL_DIFF") || RESET_SUMMARY=""
+        # merge diff + maven output for summarization
+        COMBINED_CONTENT="$FAIL_DIFF"$'\n\nMAVEN OUTPUT:\n'"$TEST_OUTPUT"
+        RESET_SUMMARY=$(summarize_code "$COMBINED_CONTENT") || RESET_SUMMARY=""
         RESET_SUMMARY=${RESET_SUMMARY:-"No summary from API"}
         COMMIT_MSG="[TCR RESET] $RESET_SUMMARY"
       else
@@ -108,7 +115,6 @@ while true; do
       fi
 
       log_debug "Commit message: $COMMIT_MSG"
-
       git reset --hard HEAD
       git commit --allow-empty -m "$COMMIT_MSG"
     fi
