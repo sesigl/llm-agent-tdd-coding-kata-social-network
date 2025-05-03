@@ -25,6 +25,19 @@ This can be addressed by using TDD to provide from the beginning long-living exe
 To make TDD more strict and comparable, a technique [test-commit-revert](https://nvoulgaris.com/test-commit-revert/) is used. This gives us a more strict ruleset how to do TDD, but also
 allows us to do more analysis comparing development with and without agentic help. 
 
+### The development cycle
+
+TCR is a more strict TDD. I recommend the following executing cycle (which might be different how others do TCR):
+
+Preparation:
+- run `./tcr.sh` to start the TCR process
+
+Cycle:
+1. Write a test, press "f" to check if the build or test fails
+2. Do the implementation
+3. Press "ENTER" to execute the TCR check. If tests are green then the changes are committed. If not the changed are reset. In both cases there is an empty or not empty commit with a useful commit message leveraging Gemini for traceability.
+4. Start again with Step 1
+
 ## The Kata
 
 Source: https://kata-log.rocks/social-network-kata

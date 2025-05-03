@@ -68,42 +68,51 @@ summarize_code() {
 }
 
 # Main loop: wait for Enter key, then run tests and handle git accordingly
-echo "Starting TCR loop. Press Enter to run the cycle."
+echo "Starting TCR loop. Press Enter to run TCR cycle, 'f' to run tests only (expect fail), or Ctrl+C to exit."
+
 while true; do
-  read -p $'\nPress Enter to run TCR cycle (or Ctrl+C to exit)...'
-  echo "Running tests..."
-  if mvn clean test; then
-    echo "Tests passed. Preparing commit..."
-    git add -A
-    ADDED_CODE=$(git diff --cached)
-    log_debug "Diff content: $ADDED_CODE"
-    if [ -n "$ADDED_CODE" ]; then
-      SUMMARY=$(summarize_code "$ADDED_CODE") || SUMMARY=""
-      SUMMARY=${SUMMARY:-"No summary from API"}
-      COMMIT_MSG="[TCR] $SUMMARY"
+  # read a single key (silent, no newline)
+  read -rsn1 -p $'\nPress Enter (TCR) or f (tests only): ' key
+  echo
+  if [[ $key == "" ]]; then
+    # full TCR cycle
+    echo "Running tests..."
+    if mvn clean test; then
+      echo "Tests passed. Preparing commit..."
+      git add -A
+      ADDED_CODE=$(git diff --cached)
+      log_debug "Diff content: $ADDED_CODE"
+      if [ -n "$ADDED_CODE" ]; then
+        SUMMARY=$(summarize_code "$ADDED_CODE") || SUMMARY=""
+        SUMMARY=${SUMMARY:-"No summary from API"}
+        COMMIT_MSG="[TCR] $SUMMARY"
+      else
+        COMMIT_MSG="[TCR] No code changes detected."
+      fi
+      log_debug "Commit message: $COMMIT_MSG"
+      git commit -m "$COMMIT_MSG"
     else
-      COMMIT_MSG="[TCR] No code changes detected."
+      echo "Tests failed. Reverting to last commit..."
+      FAIL_DIFF=$(git diff)
+      log_debug "Diff content: $FAIL_DIFF"
+      if [ -n "$FAIL_DIFF" ]; then
+        RESET_SUMMARY=$(summarize_code "$FAIL_DIFF") || RESET_SUMMARY=""
+        RESET_SUMMARY=${RESET_SUMMARY:-"No summary from API"}
+        COMMIT_MSG="[TCR RESET] $RESET_SUMMARY"
+      else
+        COMMIT_MSG="[TCR RESET] No code changes detected."
+      fi
+
+      log_debug "Commit message: $COMMIT_MSG"
+
+      git reset --hard HEAD
+      git commit --allow-empty -m "$COMMIT_MSG"
     fi
-    log_debug "Commit message: $COMMIT_MSG"
-    git commit -m "$COMMIT_MSG"
+  elif [[ $key == "f" || $key == "F" ]]; then
+    # just run tests, no git actions
+    echo "Running tests only (no commit/revert)..."
+    mvn clean test
   else
-    echo "Tests failed. Reverting to last commit..."
-    FAIL_DIFF=$(git diff)
-    log_debug "Diff content: $FAIL_DIFF"
-    if [ -n "$FAIL_DIFF" ]; then
-      RESET_SUMMARY=$(summarize_code "$FAIL_DIFF") || RESET_SUMMARY=""
-      RESET_SUMMARY=${RESET_SUMMARY:-"No summary from API"}
-      COMMIT_MSG="[TCR RESET] $RESET_SUMMARY"
-    else
-      COMMIT_MSG="[TCR RESET] No code changes detected."
-    fi
-
-    log_debug "Commit message: $COMMIT_MSG"
-
-    git reset --hard HEAD
-    git commit --allow-empty -m "$COMMIT_MSG"
+    echo "Unrecognized key '$key' – please press Enter or f."
   fi
-
-  echo "committed."
 done
-
