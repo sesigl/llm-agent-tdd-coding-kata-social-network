@@ -16,12 +16,7 @@ class TimelineServiceTest {
 
     @Test
     fun `alice can publish 2 messages to a personal timeline`() {
-        timelineService.publishMessage(
-            messageContent = "message 1",
-            userId = "alice"
-        )
-
-        val messages = publishAndGetMessages("message 2", "alice")
+        val messages = publishAndGetMessages(listOf("message 1", "message 2"), "alice")
 
         assertEquals(listOf("message 1", "message 2"), messages)
     }
@@ -36,13 +31,19 @@ class TimelineServiceTest {
     }
 
     private fun publishAndGetMessages(messageContent: String, userId: String): List<String> {
-        timelineService.publishMessage(
-            messageContent = messageContent,
-            userId = userId
-        )
-        val messagesFromAlice = timelineService.getAllMessages(
+        return publishAndGetMessages(listOf(messageContent), userId)
+    }
+
+    private fun publishAndGetMessages(messageContents: List<String>, userId: String): List<String> {
+        messageContents.forEach {
+            timelineService.publishMessage(
+                messageContent = it,
+                userId = userId
+            )
+        }
+
+        return timelineService.getAllMessages(
             userId = userId,
         )
-        return messagesFromAlice
     }
 }
