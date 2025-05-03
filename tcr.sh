@@ -78,9 +78,10 @@ while true; do
   if [[ $key == "" ]]; then
     # full TCR cycle
     echo "Running tests..."
-    # capture maven output
-    if TEST_OUTPUT=$(mvn clean test 2>&1); then
-      echo "$TEST_OUTPUT"
+    # capture maven output with colors (force ANSI) while printing live
+    TMP_OUT=$(mktemp)
+    if mvn -Dstyle.color=always clean test 2>&1 | tee "$TMP_OUT"; then
+      TEST_OUTPUT=$(cat "$TMP_OUT"); rm "$TMP_OUT"
       echo "Tests passed. Preparing commit..."
       git add -A
       ADDED_CODE=$(git diff --cached)
@@ -98,9 +99,7 @@ while true; do
       fi
 
     else
-      # on failure, show and log maven output
-      echo "$TEST_OUTPUT"
-      echo "Tests failed. Reverting to last commit..."
+      # on failure, Maven output already printed by tee
       FAIL_DIFF=$(git diff)
       log_debug "Diff content: $FAIL_DIFF"
 
@@ -126,3 +125,4 @@ while true; do
     echo "Unrecognized key '$key' – please press Enter or f."
   fi
 done
+
