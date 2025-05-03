@@ -21,37 +21,28 @@ class TimelineServiceTest {
             userId = "alice"
         )
 
-        timelineService.publishMessage(
-            messageContent = "message 2",
-            userId = "alice"
-        )
-
-        val messages = timelineService.getAllMessages(
-            userId = "alice",
-        )
+        val messages = publishAndGetMessages("message 2", "alice")
 
         assertEquals(listOf("message 1", "message 2"), messages)
     }
 
     @Test
     fun `multiple users can publish messages`() {
-        timelineService.publishMessage(
-            messageContent = "message from alice",
-            userId = "alice"
-        )
-        val messagesFromAlice = timelineService.getAllMessages(
-            userId = "alice",
-        )
-
-        timelineService.publishMessage(
-            messageContent = "message from bob",
-            userId = "bob"
-        )
-        val messagesFromBob = timelineService.getAllMessages(
-            userId = "bob",
-        )
+        val messagesFromAlice = publishAndGetMessages("message from alice", "alice")
+        val messagesFromBob = publishAndGetMessages("message from bob", "bob")
 
         assertEquals(listOf("message from bob"), messagesFromBob)
         assertEquals(listOf("message from alice"), messagesFromAlice)
+    }
+
+    private fun publishAndGetMessages(messageContent: String, userId: String): List<String> {
+        timelineService.publishMessage(
+            messageContent = messageContent,
+            userId = userId
+        )
+        val messagesFromAlice = timelineService.getAllMessages(
+            userId = userId,
+        )
+        return messagesFromAlice
     }
 }
