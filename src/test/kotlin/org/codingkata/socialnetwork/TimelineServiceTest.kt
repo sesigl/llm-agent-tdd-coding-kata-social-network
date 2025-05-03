@@ -1,15 +1,21 @@
 package org.codingkata.socialnetwork.org.codingkata.socialnetwork
 
 import org.codingkata.socialnetwork.TimelineService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 
 class TimelineServiceTest {
 
+    private lateinit var timelineService: TimelineService
+
+    @BeforeEach
+    fun setUp() {
+        timelineService = TimelineService()
+    }
+
     @Test
     fun `alice can publish 2 messages to a personal timeline`() {
-        val timelineService = TimelineService()
-
         timelineService.publishMessage(
             messageContent = "message 1",
             userId = "alice"
@@ -29,8 +35,6 @@ class TimelineServiceTest {
 
     @Test
     fun `multiple users can publish messages`() {
-        val timelineService = TimelineService()
-
         timelineService.publishMessage(
             messageContent = "message from alice",
             userId = "alice"
