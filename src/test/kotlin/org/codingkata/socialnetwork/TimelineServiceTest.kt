@@ -7,21 +7,6 @@ import kotlin.test.assertEquals
 class TimelineServiceTest {
 
     @Test
-    fun `alice can publish messages to a personal timeline`() {
-        val timelineService = TimelineService()
-        timelineService.publishMessage(
-            messageContent = "Happy coding",
-            userId = "alice"
-        )
-
-        val messages = timelineService.getAllMessages(
-            userId = "alice",
-        )
-
-        assertEquals(listOf("Happy coding"), messages)
-    }
-
-    @Test
     fun `alice can publish 2 messages to a personal timeline`() {
         val timelineService = TimelineService()
 
