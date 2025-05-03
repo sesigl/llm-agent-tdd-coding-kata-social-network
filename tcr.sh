@@ -68,11 +68,12 @@ summarize_code() {
 }
 
 # Main loop: wait for Enter key, then run tests and handle git accordingly
-echo "Starting TCR loop. Press Enter to run TCR cycle, 'f' to run tests only (expect fail), or Ctrl+C to exit."
+echo "Starting a TCR coding kata session... Have fun 🚀!"
+echo "--------------------------------------------------"
 
 while true; do
   # read a single key (silent, no newline)
-  read -rsn1 -p $'\nPress Enter (TCR) or f (tests only): ' key
+  read -rsn1 -p $'\n Enter - run the TCR cycle \n f - run tests only \n Ctrl+C to exit\n' key
   echo
   if [[ $key == "" ]]; then
     # full TCR cycle
