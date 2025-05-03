@@ -1,14 +1,27 @@
 #!/usr/bin/env bash
 # TCR (Test && Commit || Revert) automation script
-# Manual trigger: Press Enter to execute the cycle.
+# Usage: tcr.sh [-d]  # -d = debug mode
+
+# parse flags
+DEBUG=0
+while getopts "d" opt; do
+  case $opt in
+    d) DEBUG=1 ;;
+  esac
+done
+shift $((OPTIND -1))
+
+log_debug() {
+  if [ "$DEBUG" -eq 1 ]; then
+    echo "$@" >&2
+  fi
+}
 
 # Default commit message
 COMMIT_MSG="WIP"
 
 # strict mode + better error detection
 set -euo pipefail
-# Uncomment for curl/git debug traces:
-# set -x
 
 # ensure API key is provided
 : "${GEMINI_API_KEY:?Environment variable GEMINI_API_KEY must be set}"
@@ -38,7 +51,7 @@ summarize_code() {
       echo "Error: API request failed" >&2
       return 1
     }
-  echo "API response: $response" >&2
+  log_debug "API response: $response"
 
   # parse with jq if installed, else fallback to grep/sed
   if command -v jq &>/dev/null; then
@@ -63,7 +76,7 @@ while true; do
     echo "Tests passed. Preparing commit..."
     git add -A
     ADDED_CODE=$(git diff --cached)
-    echo "Diff content: $ADDED_CODE" >&2
+    log_debug "Diff content: $ADDED_CODE"
     if [ -n "$ADDED_CODE" ]; then
       SUMMARY=$(summarize_code "$ADDED_CODE") || SUMMARY=""
       SUMMARY=${SUMMARY:-"No summary from API"}
@@ -71,12 +84,12 @@ while true; do
     else
       COMMIT_MSG="[TCR] No code changes detected."
     fi
-    echo "Commit message: $COMMIT_MSG" >&2
-    #git commit -m "$COMMIT_MSG"
+    log_debug "Commit message: $COMMIT_MSG"
+    git commit -m "$COMMIT_MSG"
   else
     echo "Tests failed. Reverting to last commit..."
     FAIL_DIFF=$(git diff)
-    echo "Diff content: $FAIL_DIFF" >&2
+    log_debug "Diff content: $FAIL_DIFF"
     if [ -n "$FAIL_DIFF" ]; then
       RESET_SUMMARY=$(summarize_code "$FAIL_DIFF") || RESET_SUMMARY=""
       RESET_SUMMARY=${RESET_SUMMARY:-"No summary from API"}
@@ -84,8 +97,13 @@ while true; do
     else
       COMMIT_MSG="[TCR RESET] No code changes detected."
     fi
+
+    log_debug "Commit message: $COMMIT_MSG"
+
     git reset --hard HEAD
     git commit --allow-empty -m "$COMMIT_MSG"
   fi
+
+  echo "committed."
 done
 
