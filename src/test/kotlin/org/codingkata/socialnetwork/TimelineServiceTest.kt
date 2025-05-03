@@ -2,6 +2,7 @@ package org.codingkata.socialnetwork.org.codingkata.socialnetwork
 
 import org.codingkata.socialnetwork.TimelineService
 import org.junit.jupiter.api.Test
+import kotlin.test.assertEquals
 
 class TimelineServiceTest {
 
@@ -12,5 +13,11 @@ class TimelineServiceTest {
             messageContent = "Happy coding",
             userId = "alice"
         )
+
+        val messages = timelineService.getAllMessages(
+            userId = "alice",
+        )
+
+        assertEquals(listOf("Happy coding"), messages)
     }
 }

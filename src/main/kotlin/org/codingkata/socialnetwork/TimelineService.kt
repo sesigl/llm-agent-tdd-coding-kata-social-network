@@ -6,4 +6,8 @@ class TimelineService {
     fun publishMessage(messageContent: String, userId: String) {
         this.messageContent = messageContent
     }
+
+    fun getAllMessages(userId: String): List<String> {
+        return listOf(this.messageContent)
+    }
 }
