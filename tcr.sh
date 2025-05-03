@@ -23,7 +23,7 @@ echo "Starting TCR loop. Press Enter to run the cycle."
 while true; do
   read -p $'\nPress Enter if you want to run the TCR cycle (for example, after making code changes or adding tests). Ctrl+C to exit...'
   echo "\nRunning tests..."
-  if mvn test; then
+  if mvn clean test; then
     echo "Tests passed. Committing changes..."
     git add -A
     # Get added code diff
