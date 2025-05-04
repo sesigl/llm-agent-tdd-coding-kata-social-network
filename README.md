@@ -48,11 +48,11 @@ Your Team is tired of all those boring tasks like bowling game scores, bank acco
 
 ### Backlog of requirements
 
-- Posting: Alice can publish messages to a personal timeline
+- Posting: Alice can publish messages to her personal timeline
 - Reading: Bob can view Alice’s timeline
 - Following: Charlie can subscribe to Alice’s and Bob’s timelines, and view an aggregated list of all subscriptions
 - Mentions: Bob can link to Charlie in a message using “@”
 - Links: Alice can link to a clickable web resource in a message
-- Direct Messages: Mallory can send a private message to Alice
+- Direct Messages: Mallory can send a private message to Alice, which is a timeline entry only visible to Alice
 
 
