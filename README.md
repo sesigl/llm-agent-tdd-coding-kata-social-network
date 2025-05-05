@@ -118,6 +118,9 @@ Based *only* on the provided data, calculate the following metrics and provide a
 9.  `test_focus_rating`: Integer (1-5). Rate the tests based on their focus on *behavior* (what the system should do) versus *implementation details* (how it does it). 1 = Heavily implementation-focused, difficult to understand behavior; 5 = Clearly specifies behavior (BDD-like), independent of implementation details.
 10. `implementation_clean_code_rating`: Integer (1-5). Rate the *final source code* based on general Clean Code principles (e.g., meaningful names, small functions, SRP, comments quality, formatting). 1 = Poor adherence; 5 = Excellent adherence.
 11. `test_clean_code_rating`: Integer (1-5). Rate the *final test code* based on general Clean Code principles (e.g., readability, structure like Arrange-Act-Assert, clear assertion messages, meaningful test names). 1 = Poor adherence; 5 = Excellent adherence.
+12. `ai_support_level`: "none", "completion", "edit" or "agent". The amount of AI support in the task.
+13. `day`: Integer 0-30. The number of times I have done the tasks with different level of AI support.
+14. `description`: Overall description of the test run.
 
 **Output Format:**
 
@@ -128,6 +131,8 @@ Provide the results in two parts:
 **Example JSON Structure:**
 ```json
 {
+  "ai_support_level": "completion",
+  "day": 2,
   "main_use_cases_coverage": 3,
   "additional_edge_cases": 2,
   "time_to_completion_or_session_end_seconds": 1800,
