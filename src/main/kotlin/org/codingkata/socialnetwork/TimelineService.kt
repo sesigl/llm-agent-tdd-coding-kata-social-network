@@ -7,11 +7,9 @@ class TimelineService(
     private var subscriber: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     fun publishMessage(ownerUserId: String, content: String) {
-        timelineRepository.findOrCreate(ownerUserId).publish(content)
+        val timeline = timelineRepository.findOrCreate(ownerUserId)
 
-        subscriber.getOrPut(ownerUserId, { mutableListOf() }).forEach {
-            timelineRepository.findOrCreate(it).publish(content)
-        }
+        timeline.publish(content)
     }
 
     fun getMessages(userId: String, requesterUserId: String = userId): List<String> {
@@ -19,6 +17,9 @@ class TimelineService(
     }
 
     fun subscribeTo(timelineUserId: String, subscriberUserId: String) {
-        this.subscriber.getOrPut(timelineUserId, { mutableListOf() }).add(subscriberUserId)
+        val timelineOfSubscriber = timelineRepository.findOrCreate(subscriberUserId)
+        val timelineOfInterest = timelineRepository.findOrCreate(timelineUserId)
+
+        timelineOfInterest.crossPublishValuesTo(timelineOfSubscriber)
     }
 }
