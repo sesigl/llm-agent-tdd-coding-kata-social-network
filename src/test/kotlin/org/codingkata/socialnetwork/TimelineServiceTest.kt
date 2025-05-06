@@ -23,13 +23,15 @@ class TimelineServiceTest {
     }
 
     @Test
-    fun `charlie can subscribe to alice's timeline`() {
+    fun `charlie can subscribe to alice's and bob's timeline`() {
         val service = TimelineService()
 
         service.subscribeTo(timelineUserId = "alice", subscriberUserId = "charlie")
+        service.subscribeTo(timelineUserId = "bob", subscriberUserId = "charlie")
 
         service.publishMessage(ownerUserId = "alice", content = "Hello from alice")
+        service.publishMessage(ownerUserId = "bob", content = "Hello from bob")
 
-        assertEquals(listOf("Hello from alice"), service.getMessages(userId = "charlie"))
+        assertEquals(listOf("Hello from alice", "Hello from bob"), service.getMessages(userId = "charlie"))
     }
 }
