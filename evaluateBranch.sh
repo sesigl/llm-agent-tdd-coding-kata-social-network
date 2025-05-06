@@ -191,10 +191,12 @@ test_to_code_ratio: Float. Calculate the ratio of lines of code in the final tes
 average_assertions_per_test: Float. Calculate the average number of assertion statements per test method/function found in the final test code.
 cyclomatic_complexity: Integer. Estimate the *average* cyclomatic complexity across the functions/methods in the *final source code*. If possible, state the tool/methodology used for estimation (e.g., counting decision points + 1).
 code_duplication_percentage: Float. Estimate the percentage of duplicated code within the *final source code*. Briefly state the basis for this estimation (e.g., visual inspection, assumed tooling).
-code_smells: List of strings. Identify potential code smells present in the *final source code* based on common definitions (e.g., Long Method, Large Class, Feature Envy, Duplicated Code, etc.). List the identified smells.
+code_smells: Integer. Identify the number of potential code smells present in the *final source code* based on common definitions (e.g., Long Method, Large Class, Feature Envy, Duplicated Code, etc.). List the identified smells.
 test_focus_rating: Integer (1-5). Rate the tests based on their focus on *behavior* (what the system should do) versus *implementation details* (how it does it). 1 = Heavily implementation-focused, difficult to understand behavior; 5 = Clearly specifies behavior (BDD-like), independent of implementation details.
 implementation_clean_code_rating: Integer (1-5). Rate the *final source code* based on general Clean Code principles (e.g., meaningful names, small functions, SRP, comments quality, formatting). 1 = Poor adherence; 5 = Excellent adherence.
 test_clean_code_rating: Integer (1-5). Rate the *final test code* based on general Clean Code principles (e.g., readability, structure like Arrange-Act-Assert, clear assertion messages, meaningful test names). 1 = Poor adherence; 5 = Excellent adherence.
+commits_per_minute: Float. Calculates how many commits per minute are done, to measure the duration of the feedback cycle.
+tcr_revert_rate: Float (1.0-0.0) Calculates how many percentage of commits are revert commits resetting progress. 1 being 100%, 0.5 being 50%, and 0 being 0%.
 
 **Output Format:**
 
@@ -212,11 +214,13 @@ Provide ONLY the JSON object containing the calculated metrics and an overall ge
   "average_assertions_per_test": 1.5,
   "cyclomatic_complexity": 2,
   "code_duplication_percentage": 5.0,
-  "code_smells": ["Duplicated Code", "Primitive Obsession"],
+  "code_smells": 2,
   "test_focus_rating": 4,
   "implementation_clean_code_rating": 3,
   "test_clean_code_rating": 4,
-  "description": "The coding session, which employed the Test-Commit-Revert (TCR) methodology, spanned approximately 27 minutes and 16 seconds according to the commit timestamps. The commit log indicates a development process that involved adding basic timeline functionality (publish, retrieve), handling multiple messages, and implementing access control features (owner-only restriction, general access, granular access). The log also suggests refactoring efforts to improve test setup. However, the provided final source code and test code are in an initial, largely empty state. The TimelineService class is defined but contains no implementation, and the TimelineServiceTest class contains only one empty test method named example. This final state does not reflect the features described as being added and committed in the commit history. Consequently, based strictly on the final code and tests, none of the main social network kata requirements are met, there are no implemented behaviors or tested edge cases, and code quality metrics like complexity and duplication are minimal or non-applicable due to the lack of code. The tests, in their final form, lack clear focus or adherence to clean code principles. The most notable aspect of this session's data is the significant discrepancy between the commit history, which portrays steady progress and successful commits under TCR, and the final code snapshot provided."
+  "description": "The coding session, which employed the Test-Commit-Revert (TCR) methodology, spanned approximately 27 minutes and 16 seconds according to the commit timestamps. The commit log indicates a development process that involved adding basic timeline functionality (publish, retrieve), handling multiple messages, and implementing access control features (owner-only restriction, general access, granular access). The log also suggests refactoring efforts to improve test setup. However, the provided final source code and test code are in an initial, largely empty state. The TimelineService class is defined but contains no implementation, and the TimelineServiceTest class contains only one empty test method named example. This final state does not reflect the features described as being added and committed in the commit history. Consequently, based strictly on the final code and tests, none of the main social network kata requirements are met, there are no implemented behaviors or tested edge cases, and code quality metrics like complexity and duplication are minimal or non-applicable due to the lack of code. The tests, in their final form, lack clear focus or adherence to clean code principles. The most notable aspect of this session's data is the significant discrepancy between the commit history, which portrays steady progress and successful commits under TCR, and the final code snapshot provided.",
+  "commits_per_minute": 1.2,
+  "tcr_revert_rate": 0.2
 }
 EOM
 
