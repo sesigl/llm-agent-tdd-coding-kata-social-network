@@ -6,7 +6,7 @@ class TimelineService {
     fun publishMessage(ownerUserId: String, content: String) {
         this.messages.getOrPut(ownerUserId, { mutableListOf() }).add(content)
     }
-    fun getMessages(userId: String): List<String> {
+    fun getMessages(userId: String, requesterUserId: String = userId): List<String> {
         return this.messages.getOrDefault(userId, arrayListOf())
     }
 }
