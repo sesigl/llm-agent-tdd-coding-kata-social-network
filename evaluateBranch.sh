@@ -33,7 +33,9 @@ if [ -n "$BRANCH_NAME" ]; then
   echo "Getting logs from branch: $BRANCH_NAME"
   TCR_LOG=$(git log "$BRANCH_NAME" --grep="^\[TCR\]" --date=iso)
 else
-  TCR_LOG=$(git log --grep="^\[TCR\]" --date=iso)
+  # fail, branch name is required
+  echo "Error: Branch name is required. Usage: $0 <branch_name>" >&2
+  exit 1
 fi
 
 # --- Extract ai_support_level using Gemini ---
