@@ -79,26 +79,59 @@ else
   echo "day is valid: $DAY"
 fi
 
-# 2. Gather the final source and test code
-echo "Collecting all source files under src/main and all test files under src/test..."
+# 2. Gather the final source and test code from the branch (using git show)
+echo "Collecting source and test files from branch $BRANCH_NAME..."
 SRC_CODE=""
 TEST_CODE=""
-if [ -d "src/main" ]; then
-  while IFS= read -r -d '' file; do
+
+# Get list of source files in the branch
+BRANCH_SRC_FILES=$(git ls-tree -r --name-only "$BRANCH_NAME" -- src/main 2>/dev/null)
+BRANCH_TEST_FILES=$(git ls-tree -r --name-only "$BRANCH_NAME" -- src/test 2>/dev/null)
+
+if [ -n "$BRANCH_SRC_FILES" ]; then
+  for file in $BRANCH_SRC_FILES; do
     SRC_CODE+="\n\n// File: $file\n"
-    SRC_CODE+="$(cat "$file")"
-  done < <(find src/main -type f -print0)
-fi
-if [ -d "src/test" ]; then
-  while IFS= read -r -d '' file; do
-    TEST_CODE+="\n\n// File: $file\n"
-    TEST_CODE+="$(cat "$file")"
-  done < <(find src/test -type f -print0)
+    SRC_CODE+="$(git show "$BRANCH_NAME:$file" 2>/dev/null)"
+  done
 fi
 
-# 3. Prepare the evaluation prompt (from README.md)
+if [ -n "$BRANCH_TEST_FILES" ]; then
+  for file in $BRANCH_TEST_FILES; do
+    TEST_CODE+="\n\n// File: $file\n"
+    TEST_CODE+="$(git show "$BRANCH_NAME:$file" 2>/dev/null)"
+  done
+fi
+
+# 3. Get initial files from main branch
+echo "Collecting initial files from main branch..."
+INITIAL_SRC_CODE=""
+INITIAL_TEST_CODE=""
+
+# Get list of source files in main
+MAIN_SRC_FILES=$(git ls-tree -r --name-only main -- src/main 2>/dev/null)
+MAIN_TEST_FILES=$(git ls-tree -r --name-only main -- src/test 2>/dev/null)
+
+if [ -n "$MAIN_SRC_FILES" ]; then
+  for file in $MAIN_SRC_FILES; do
+    INITIAL_SRC_CODE+="\n\n// File: $file\n"
+    INITIAL_SRC_CODE+="$(git show "main:$file" 2>/dev/null)"
+  done
+fi
+
+if [ -n "$MAIN_TEST_FILES" ]; then
+  for file in $MAIN_TEST_FILES; do
+    INITIAL_TEST_CODE+="\n\n// File: $file\n"
+    INITIAL_TEST_CODE+="$(git show "main:$file" 2>/dev/null)"
+  done
+fi
+
+# 4. Get git diff between main and the branch
+echo "Getting diff between main and $BRANCH_NAME..."
+GIT_DIFF=$(git diff main..$BRANCH_NAME)
+
+# 5. Prepare the evaluation prompt (from README.md)
 read -r -d '' PROMPT << EOM
-Analyze the following data from a 30-minute Test-Commit-Revert (TCR) coding session for the "Social Network Kata". The goal is to evaluate the development process based on the provided commit log, final source code, and final test code.
+Analyze the following data from a 30-minute Test-Commit-Revert (TCR) coding session for the "Social Network Kata". The goal is to evaluate the development process based on the provided commit log, initial code, final code, and git diff.
 
 **ai_support_level for this branch:** $AI_SUPPORT_LEVEL
 **day for this branch:** $DAY
@@ -115,17 +148,35 @@ Analyze the following data from a 30-minute Test-Commit-Revert (TCR) coding sess
 
 $TCR_LOG
 
-2.  **Final Source Code:**
+2.  **Initial Source Code (from main branch):**
+
+$INITIAL_SRC_CODE
+
+3.  **Initial Test Code (from main branch):**
+
+$INITIAL_TEST_CODE
+
+4.  **Final Source Code (from $BRANCH_NAME branch):**
 
 $SRC_CODE
 
-3.  **Final Test Code:**
+5.  **Final Test Code (from $BRANCH_NAME branch):**
 
 $TEST_CODE
 
+6.  **Git Diff (showing changes from main to $BRANCH_NAME):**
+
+$GIT_DIFF
+
+**Analysis Instructions:**
+- Compare the initial code from the main branch with the final code from the branch to understand what development work was done.
+- Use the git diff to see exactly what changes were made during the session.
+- Consider how the commit messages align with the actual code changes you can see in the diff.
+- Analyze the progression of development based on commit messages and the resulting code.
+
 **Analysis Task:**
 
-Based *only* on the provided data, calculate the following metrics and provide a general summary of the session. Adhere strictly to the definitions provided below.
+Based on the provided data, calculate the following metrics and provide a general summary of the session. Adhere strictly to the definitions provided below.
 
 **Metric Definitions:**
 
@@ -133,7 +184,7 @@ ai_support_level: "none", "completion", "edit" or "agent". The amount of AI supp
 day: Integer 0-30. The number of times I have done the tasks with different level of AI support.
 main_use_cases_coverage: Integer (0-6). Count how many of the 6 main requirements (Posting, Reading, Following, Mentions, Links, Direct Messages) appear to be implemented and tested according to the final code and tests.
 additional_edge_cases: Integer. Count the number of distinct edge cases or alternative scenarios explicitly handled in the tests beyond the most basic path for each implemented main requirement.
-time_to_completion_or_session_end_seconds: Integer. Report 1800 (the session duration) as the kata was likely not fully completed in 30 mins. If, exceptionally, all 6 use cases were verifiably completed *before* the 30min mark according to the commit log, estimate the time based on the last relevant commit timestamp. Otherwise, always use 1800.
+time_to_completion_in_seconds: Integer. The time between the first and the last commit provided, which calculates the exact duration of the session.
 test_to_code_ratio: Float. Calculate the ratio of lines of code in the final test files to the lines of code in the final source files (excluding comments and blank lines if possible, otherwise total lines). State the method used (e.g., total lines or non-comment/blank lines).
 average_assertions_per_test: Float. Calculate the average number of assertion statements per test method/function found in the final test code.
 cyclomatic_complexity: Integer. Estimate the *average* cyclomatic complexity across the functions/methods in the *final source code*. If possible, state the tool/methodology used for estimation (e.g., counting decision points + 1).
@@ -154,7 +205,7 @@ Provide ONLY the JSON object containing the calculated metrics and an overall ge
   "day": 2,
   "main_use_cases_coverage": 3,
   "additional_edge_cases": 2,
-  "time_to_completion": 1800,
+  "time_to_completion_in_seconds": 1800,
   "test_to_code_ratio": 1.8,
   "average_assertions_per_test": 1.5,
   "cyclomatic_complexity": 2,
@@ -167,7 +218,9 @@ Provide ONLY the JSON object containing the calculated metrics and an overall ge
 }
 EOM
 
-# 4. Call Gemini API to get the evaluation JSON and append to results.ndjson
+echo "GEMINI FINAL PROMPT: $PROMPT"
+
+# 6. Call Gemini API to get the evaluation JSON and append to results.ndjson
 
 # Ensure API key is provided
 : "${GEMINI_API_KEY:?Environment variable GEMINI_API_KEY must be set}"
@@ -190,4 +243,3 @@ printf '%s\n' "$JSON_LINE" >> results.ndjson
 echo "Evaluation JSON appended to results.ndjson."
 # Optionally, print the summary section as well
 printf '%s\n' "$EVAL_RESULT" | awk '/^```json/{flag=0}flag;/^```json/{flag=1}' | sed '/^$/d'
-
