@@ -6,11 +6,8 @@ class TimelineService(
     private val subscribers: MutableMap<String, MutableList<String>> = mutableMapOf()
 
     fun postMessage(authorUserId: String, messageContent: String) {
-        timelineRepository.getOrCreateTimeline(authorUserId).postMessage(messageContent)
-
-        subscribers.getOrPut(authorUserId, { mutableListOf() }).forEach {
-            timelineRepository.getOrCreateTimeline(it).postMessage(messageContent)
-        }
+        val authorTimeline = timelineRepository.getOrCreateTimeline(authorUserId)
+        authorTimeline.postMessage(messageContent)
     }
 
     fun getAllMessages(authorUserId: String, requesterUserId: String = authorUserId): List<String> {
@@ -18,7 +15,10 @@ class TimelineService(
     }
 
     fun subscribe(subscriberUserId: String, targetTimelineUserId: String) {
-        subscribers.getOrPut(targetTimelineUserId, { mutableListOf() }).add(subscriberUserId)
+        val targetTimeline = timelineRepository.getOrCreateTimeline(targetTimelineUserId)
+        val subscriberTimeline = timelineRepository.getOrCreateTimeline(subscriberUserId)
+
+        targetTimeline.publishContentOnChangeTo(subscriberTimeline)
     }
 
 }
