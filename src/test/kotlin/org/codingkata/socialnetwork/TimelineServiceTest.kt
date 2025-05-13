@@ -6,6 +6,11 @@ import kotlin.test.assertEquals
 
 class TimelineServiceTest {
 
+    /**
+     * Notes
+     *
+     * - another user can not read a users timeline if timeline is set to private ?
+     */
     @Test
     fun `alice and bob can publish messages to their personal timeline`() {
         val service = TimelineService()
@@ -20,10 +25,21 @@ class TimelineServiceTest {
     @Test
     fun `bob can view alice's timeline`() {
         val service = TimelineService()
+
         service.postMessage(authorUserId = "alice", messageContent = "message from alice")
 
         val messages = service.getAllMessages(authorUserId = "alice", requesterUserId = "bob")
+        assertEquals(listOf("message from alice"), messages)
+    }
 
+    @Test
+    fun `charlie can subscribe to alice's timeline`() {
+        val service = TimelineService()
+
+        service.subscribe(subscriberUserId = "charlie", targetTimelineUserId = "alice")
+        service.postMessage(authorUserId = "alice", messageContent = "message from alice")
+
+        val messages = service.getAllMessages(authorUserId = "charlie")
         assertEquals(listOf("message from alice"), messages)
     }
 }
