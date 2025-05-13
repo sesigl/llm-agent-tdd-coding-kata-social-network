@@ -7,4 +7,8 @@ class TimelineService {
         this.messages.add(messageContent)
     }
 
+    fun getAllMessages(authorUserId: String): List<String> {
+        return this.messages
+    }
+
 }
