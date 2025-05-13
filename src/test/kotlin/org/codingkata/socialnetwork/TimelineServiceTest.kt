@@ -56,4 +56,14 @@ class TimelineServiceTest {
         val messages = service.getAllMessages(authorUserId = "bob")
         assertEquals(listOf("message from <user:bob> about <user:charlie>!"), messages)
     }
+
+    @Test
+    fun `alice can link to a clickable web resource in a message`() {
+        val service = TimelineService()
+
+        service.postMessage(authorUserId = "bob", messageContent = "message from bob about https://www.google.com!")
+
+        val messages = service.getAllMessages(authorUserId = "bob")
+        assertEquals(listOf("message from bob about <url:https://www.google.com>!"), messages)
+    }
 }

@@ -6,18 +6,22 @@ class Timeline {
 
     fun postMessage(messageContent: String) {
 
-        val encodedMessageContent = encodeUserLinks(messageContent)
+        val encodedMessageContentWithUserLinks = encodeUserLinks(messageContent)
+        val encodedMessageContentWithUrls = encodeUrls(encodedMessageContentWithUserLinks)
 
-        this.messages.add(encodedMessageContent)
+        this.messages.add(encodedMessageContentWithUrls)
 
         subscriberTimelines.forEach { it.postMessage(messageContent) }
     }
 
-    /**
-     * Encodes all user mentions int <user:$username>
-     * Input: "message from bob about @charlie!"
-     * Output: "message from bob about <user:charlie>!"
-     */
+    private fun encodeUrls(encodedMessageContentWithUserLinks: String): String {
+        val regex = Regex("https?://[\\w.-]+(?:\\.[\\w.-]+)+[/\\w.-]*")
+        val encodedMessageContent = encodedMessageContentWithUserLinks.replace(regex) { matchResult ->
+            "<url:${matchResult.value}>"
+        }
+        return encodedMessageContent
+    }
+
     private fun encodeUserLinks(messageContent: String): String {
         val regex = Regex("@(\\w+)")
         val encodedMessageContent = messageContent.replace(regex) { matchResult ->
