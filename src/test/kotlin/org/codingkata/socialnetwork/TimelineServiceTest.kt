@@ -10,6 +10,7 @@ class TimelineServiceTest {
      * Notes
      *
      * - another user can not read a users timeline if timeline is set to private ?
+     * - when linked in a message, does it automatically appear in another timeline ?
      */
     @Test
     fun `alice and bob can publish messages to their personal timeline`() {
@@ -44,5 +45,15 @@ class TimelineServiceTest {
 
         val messages = service.getAllMessages(authorUserId = "charlie")
         assertEquals(listOf("message from alice", "message from bob"), messages)
+    }
+
+    @Test
+    fun `bob can link to charlie in a message using @`() {
+        val service = TimelineService()
+
+        service.postMessage(authorUserId = "bob", messageContent = "message from bob about @charlie!")
+
+        val messages = service.getAllMessages(authorUserId = "bob")
+        assertEquals(listOf("message from bob about <user:charlie>!"), messages)
     }
 }
