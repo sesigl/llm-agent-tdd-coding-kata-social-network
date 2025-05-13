@@ -1,10 +1,13 @@
 package org.codingkata.socialnetwork.org.codingkata.socialnetwork
 
+import org.codingkata.socialnetwork.TimelineService
 import org.junit.jupiter.api.Test
 
 class TimelineServiceTest {
 
     @Test
-    fun example() {
+    fun `alice can publish messages to her personal timeline`() {
+        val service = TimelineService()
+        service.postMessage(authorUserId = "alice", messageContent = "message")
     }
 }
