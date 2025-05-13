@@ -16,4 +16,14 @@ class TimelineServiceTest {
 
         assertEquals(listOf("message from alice"), messages)
     }
+
+    @Test
+    fun `bob can view alice's timeline`() {
+        val service = TimelineService()
+        service.postMessage(authorUserId = "alice", messageContent = "message from alice")
+
+        val messages = service.getAllMessages(authorUserId = "alice", requesterUserId = "bob")
+
+        assertEquals(listOf("message from alice"), messages)
+    }
 }

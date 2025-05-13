@@ -7,7 +7,7 @@ class TimelineService {
         this.messages.getOrPut(authorUserId, { mutableListOf() }).add(messageContent)
     }
 
-    fun getAllMessages(authorUserId: String): List<String> {
+    fun getAllMessages(authorUserId: String, requesterUserId: String = authorUserId): List<String> {
         return this.messages.getOrPut(authorUserId, { mutableListOf() })
     }
 
