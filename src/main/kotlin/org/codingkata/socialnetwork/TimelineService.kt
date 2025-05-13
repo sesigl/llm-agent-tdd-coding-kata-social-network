@@ -1,8 +1,10 @@
 package org.codingkata.socialnetwork
 
 class TimelineService {
-    fun postMessage(authorUserId: String, messageContent: String) {
+    private val messages: MutableList<String> = mutableListOf()
 
+    fun postMessage(authorUserId: String, messageContent: String) {
+        this.messages.add(messageContent)
     }
 
 }
