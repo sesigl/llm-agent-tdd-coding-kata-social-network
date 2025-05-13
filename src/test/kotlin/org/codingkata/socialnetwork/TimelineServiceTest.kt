@@ -51,9 +51,9 @@ class TimelineServiceTest {
     fun `bob can link to charlie in a message using @`() {
         val service = TimelineService()
 
-        service.postMessage(authorUserId = "bob", messageContent = "message from bob about @charlie!")
+        service.postMessage(authorUserId = "bob", messageContent = "message from @bob about @charlie!")
 
         val messages = service.getAllMessages(authorUserId = "bob")
-        assertEquals(listOf("message from bob about <user:charlie>!"), messages)
+        assertEquals(listOf("message from <user:bob> about <user:charlie>!"), messages)
     }
 }
