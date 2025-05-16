@@ -48,4 +48,23 @@ class TimelineServiceTest {
         assertEquals(secondMessage, aliceTimeline[0], "Second message should be first in the timeline")
         assertEquals(firstMessage, aliceTimeline[1], "First message should be second in the timeline")
     }
+    
+    @Test
+    fun bobCanViewAlicesTimeline() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Alice publishes a message
+        val alice = "Alice"
+        val aliceMessage = "Alice's message"
+        timelineService.publish(alice, aliceMessage)
+        
+        // Bob views Alice's timeline
+        val bob = "Bob"
+        val aliceTimelineViewedByBob = timelineService.getTimeline(alice)
+        
+        // Assert that Bob sees Alice's message
+        assertTrue(aliceTimelineViewedByBob.contains(aliceMessage), 
+            "Bob should be able to see Alice's message when viewing her timeline")
+    }
 }
