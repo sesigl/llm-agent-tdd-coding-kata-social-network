@@ -67,4 +67,22 @@ class TimelineServiceTest {
         assertTrue(aliceTimelineViewedByBob.contains(aliceMessage), 
             "Bob should be able to see Alice's message when viewing her timeline")
     }
+    
+    @Test
+    fun charlieCanSubscribeToAlicesTimeline() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Charlie follows Alice
+        val charlie = "Charlie"
+        val alice = "Alice"
+        timelineService.follow(charlie, alice)
+        
+        // Get Charlie's subscriptions
+        val charlieSubscriptions = timelineService.getSubscriptions(charlie)
+        
+        // Assert that Charlie is following Alice
+        assertTrue(charlieSubscriptions.contains(alice), 
+            "Charlie's subscriptions should include Alice")
+    }
 }
