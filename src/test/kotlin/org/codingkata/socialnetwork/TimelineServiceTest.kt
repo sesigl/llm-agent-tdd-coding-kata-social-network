@@ -178,4 +178,28 @@ class TimelineServiceTest {
         assertEquals(messageWithMention, bobTimeline[0].content,
             "The message content should be preserved exactly, including the @mention")
     }
+    
+    @Test
+    fun messageCanContainLinks() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Alice publishes a message with a link
+        val alice = "Alice"
+        val messageWithLink = "Check out this site: http://example.com"
+        timelineService.publish(alice, messageWithLink)
+        
+        // Retrieve Alice's timeline
+        val aliceTimeline = timelineService.getTimeline(alice)
+        
+        // Assert that the message with the link is in Alice's timeline
+        assertTrue(
+            aliceTimeline.any { it.user == alice && it.content == messageWithLink },
+            "Alice's timeline should contain the message with the link"
+        )
+        
+        // Assert that the message content is preserved exactly as it was entered
+        assertEquals(messageWithLink, aliceTimeline[0].content,
+            "The message content should be preserved exactly, including the link")
+    }
 }
