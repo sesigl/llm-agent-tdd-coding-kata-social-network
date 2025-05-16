@@ -2,6 +2,7 @@ package org.codingkata.socialnetwork
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class TimelineServiceTest {
@@ -94,5 +95,63 @@ class TimelineServiceTest {
         // Assert that Charlie is following Alice
         assertTrue(charlieSubscriptions.contains(alice), 
             "Charlie's subscriptions should include Alice")
+    }
+    
+    @Test
+    fun charlieSeesAggregatedWallInReverseChronologicalOrder() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Users
+        val alice = "Alice"
+        val bob = "Bob"
+        val charlie = "Charlie"
+        val david = "David"
+        
+        // Alice's posts
+        val aliceFirstPost = "Alice's first post"
+        timelineService.publish(alice, aliceFirstPost)
+        Thread.sleep(5)
+        
+        // Bob's first post
+        val bobFirstPost = "Bob's first post"
+        timelineService.publish(bob, bobFirstPost)
+        Thread.sleep(5)
+        
+        // Charlie follows Alice and Bob
+        timelineService.follow(charlie, alice)
+        timelineService.follow(charlie, bob)
+        
+        // Alice's second post
+        val aliceSecondPost = "Alice's second post"
+        timelineService.publish(alice, aliceSecondPost)
+        Thread.sleep(5)
+        
+        // Bob's second post
+        val bobSecondPost = "Bob's second post"
+        timelineService.publish(bob, bobSecondPost)
+        Thread.sleep(5)
+        
+        // David's post (Charlie doesn't follow David)
+        val davidPost = "David's post"
+        timelineService.publish(david, davidPost)
+        
+        // Charlie gets his wall
+        val charlieWall = timelineService.getWall(charlie)
+        
+        // Assert correct order and content
+        assertEquals(4, charlieWall.size, "Charlie's wall should have 4 messages")
+        
+        // Messages should be in reverse chronological order
+        assertEquals(bobSecondPost, charlieWall[0].content, "Bob's second post should be first")
+        assertEquals(aliceSecondPost, charlieWall[1].content, "Alice's second post should be second")
+        assertEquals(bobFirstPost, charlieWall[2].content, "Bob's first post should be third")
+        assertEquals(aliceFirstPost, charlieWall[3].content, "Alice's first post should be fourth")
+        
+        // David's post should not be on Charlie's wall
+        assertFalse(
+            charlieWall.any { it.user == david && it.content == davidPost },
+            "David's post should not appear on Charlie's wall"
+        )
     }
 }

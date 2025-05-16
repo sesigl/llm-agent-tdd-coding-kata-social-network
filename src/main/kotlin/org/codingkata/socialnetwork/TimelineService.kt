@@ -62,4 +62,33 @@ class TimelineService {
         // Return the user's subscriptions or an empty set if the user is not following anyone
         return subscriptions.getOrDefault(user, mutableSetOf())
     }
+    
+    /**
+     * Retrieves an aggregated wall of messages from all users that the specified user follows
+     * The wall contains messages from all followed users, sorted by timestamp in descending order
+     * 
+     * @param user The username whose wall to retrieve
+     * @return List of messages from followed users, sorted by timestamp (newest first)
+     */
+    fun getWall(user: String): List<Message> {
+        // Get the list of users that the user follows
+        val followedUsers = getSubscriptions(user)
+        
+        // If the user is not following anyone, return an empty list
+        if (followedUsers.isEmpty()) {
+            return emptyList()
+        }
+        
+        // Create a mutable list to collect all messages from followed users
+        val wallMessages = mutableListOf<Message>()
+        
+        // For each followed user, get their timeline and add all messages to the wall
+        for (followedUser in followedUsers) {
+            val userTimeline = getTimeline(followedUser)
+            wallMessages.addAll(userTimeline)
+        }
+        
+        // Sort all messages by timestamp in descending order (newest first)
+        return wallMessages.sortedByDescending { it.timestamp }
+    }
 }
