@@ -25,17 +25,67 @@ class TimelineService {
         // This ensures newer messages appear first (reverse chronological order)
         userTimeline.add(0, message)
     }
+    
+    /**
+     * Sends a direct message from one user to another
+     * 
+     * @param sender The username of the person sending the message
+     * @param recipient The username of the person receiving the message
+     * @param messageContent The content of the message
+     */
+    fun sendDirectMessage(sender: String, recipient: String, messageContent: String) {
+        // Get or create the sender's timeline
+        val senderTimeline = timelines.getOrPut(sender) { mutableListOf() }
+        
+        // Create a Message object with the recipient field set
+        val message = Message(sender, messageContent, recipient = recipient)
+        
+        // Add the message to the beginning of the sender's timeline
+        senderTimeline.add(0, message)
+    }
 
     /**
-     * Retrieves a user's timeline
-     * The timeline is already in reverse chronological order (newest first)
+     * Retrieves a user's public timeline (messages not sent as direct messages)
+     * The timeline is in reverse chronological order (newest first)
      * 
      * @param user The username whose timeline to retrieve
-     * @return List of messages in the user's timeline in reverse chronological order
+     * @return List of public messages in the user's timeline in reverse chronological order
      */
     fun getTimeline(user: String): List<Message> {
-        // Return the user's timeline or an empty list if the user has no timeline
-        return timelines.getOrDefault(user, mutableListOf())
+        // Get the user's timeline or an empty list if the user has no timeline
+        val userTimeline = timelines.getOrDefault(user, mutableListOf())
+        
+        // Filter out direct messages (only include messages where recipient is null)
+        return userTimeline.filter { it.recipient == null }
+    }
+    
+    /**
+     * Retrieves direct messages sent to or by a user
+     * The messages are in reverse chronological order (newest first)
+     * 
+     * @param user The username whose direct messages to retrieve
+     * @return List of direct messages to or from the user in reverse chronological order
+     */
+    fun getDirectMessages(user: String): List<Message> {
+        // Create a mutable list to collect all direct messages
+        val directMessages = mutableListOf<Message>()
+        
+        // Check all user timelines for direct messages to or from this user
+        for ((poster, messages) in timelines) {
+            for (message in messages) {
+                // Include messages where this user is the recipient
+                if (message.recipient == user) {
+                    directMessages.add(message)
+                }
+                // Include messages sent by this user to someone else
+                else if (poster == user && message.recipient != null) {
+                    directMessages.add(message)
+                }
+            }
+        }
+        
+        // Sort direct messages by timestamp in descending order (newest first)
+        return directMessages.sortedByDescending { it.timestamp }
     }
     
     /**
@@ -65,10 +115,10 @@ class TimelineService {
     
     /**
      * Retrieves an aggregated wall of messages from all users that the specified user follows
-     * The wall contains messages from all followed users, sorted by timestamp in descending order
+     * The wall contains only public messages from followed users, sorted by timestamp in descending order
      * 
      * @param user The username whose wall to retrieve
-     * @return List of messages from followed users, sorted by timestamp (newest first)
+     * @return List of public messages from followed users, sorted by timestamp (newest first)
      */
     fun getWall(user: String): List<Message> {
         // Get the list of users that the user follows
@@ -79,10 +129,10 @@ class TimelineService {
             return emptyList()
         }
         
-        // Create a mutable list to collect all messages from followed users
+        // Create a mutable list to collect all public messages from followed users
         val wallMessages = mutableListOf<Message>()
         
-        // For each followed user, get their timeline and add all messages to the wall
+        // For each followed user, get their public timeline and add all messages to the wall
         for (followedUser in followedUsers) {
             val userTimeline = getTimeline(followedUser)
             wallMessages.addAll(userTimeline)

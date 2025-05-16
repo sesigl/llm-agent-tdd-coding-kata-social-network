@@ -202,4 +202,100 @@ class TimelineServiceTest {
         assertEquals(messageWithLink, aliceTimeline[0].content,
             "The message content should be preserved exactly, including the link")
     }
+    
+    @Test
+    fun malloryCanSendDirectMessageToAliceAndAliceReceivesIt() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Mallory sends a direct message to Alice
+        val mallory = "Mallory"
+        val alice = "Alice"
+        val dmContent = "DM to Alice"
+        timelineService.sendDirectMessage(mallory, alice, dmContent)
+        
+        // Alice retrieves her direct messages
+        val aliceDirectMessages = timelineService.getDirectMessages(alice)
+        
+        // Assert that Alice's direct messages contain the message from Mallory
+        assertEquals(1, aliceDirectMessages.size, "Alice should have one direct message")
+        
+        val message = aliceDirectMessages[0]
+        assertEquals(mallory, message.user, "The message should be from Mallory")
+        assertEquals(alice, message.recipient, "The message should be to Alice")
+        assertEquals(dmContent, message.content, "The message content should match")
+    }
+    
+    @Test
+    fun directMessageToAliceIsNotOnHerPublicTimeline() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Alice posts a public message
+        val alice = "Alice"
+        val alicePublicPost = "Alice's public post"
+        timelineService.publish(alice, alicePublicPost)
+        
+        // Mallory sends a direct message to Alice
+        val mallory = "Mallory"
+        val dmContent = "DM to Alice"
+        timelineService.sendDirectMessage(mallory, alice, dmContent)
+        
+        // Bob views Alice's public timeline
+        val bob = "Bob"
+        val alicePublicTimeline = timelineService.getTimeline(alice)
+        
+        // Assert that Alice's public timeline contains her public post
+        assertTrue(
+            alicePublicTimeline.any { it.content == alicePublicPost },
+            "Alice's public timeline should contain her public post"
+        )
+        
+        // Assert that Alice's public timeline does NOT contain the DM
+        assertFalse(
+            alicePublicTimeline.any { it.content == dmContent },
+            "Alice's public timeline should NOT contain the direct message"
+        )
+        
+        // Assert that Alice's public timeline only contains messages where recipient is null
+        assertTrue(
+            alicePublicTimeline.all { it.recipient == null },
+            "Alice's public timeline should only contain public messages (where recipient is null)"
+        )
+    }
+    
+    @Test
+    fun directMessageToAliceIsNotOnFollowersWall() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Charlie follows Alice
+        val charlie = "Charlie"
+        val alice = "Alice"
+        timelineService.follow(charlie, alice)
+        
+        // Alice posts a public message
+        val alicePublicPost = "Alice's public post for followers"
+        timelineService.publish(alice, alicePublicPost)
+        
+        // Mallory sends a direct message to Alice
+        val mallory = "Mallory"
+        val dmContent = "Secret DM to Alice"
+        timelineService.sendDirectMessage(mallory, alice, dmContent)
+        
+        // Charlie views his wall
+        val charlieWall = timelineService.getWall(charlie)
+        
+        // Assert that Charlie's wall contains Alice's public post
+        assertTrue(
+            charlieWall.any { it.user == alice && it.content == alicePublicPost },
+            "Charlie's wall should contain Alice's public post"
+        )
+        
+        // Assert that Charlie's wall does NOT contain Mallory's DM to Alice
+        assertFalse(
+            charlieWall.any { it.user == mallory && it.content == dmContent },
+            "Charlie's wall should NOT contain Mallory's direct message to Alice"
+        )
+    }
 }
