@@ -154,4 +154,28 @@ class TimelineServiceTest {
             "David's post should not appear on Charlie's wall"
         )
     }
+    
+    @Test
+    fun messageCanContainMentions() {
+        // Create an instance of TimelineService
+        val timelineService = TimelineService()
+        
+        // Bob publishes a message mentioning Charlie
+        val bob = "Bob"
+        val messageWithMention = "Hello @Charlie, how are you?"
+        timelineService.publish(bob, messageWithMention)
+        
+        // Retrieve Bob's timeline
+        val bobTimeline = timelineService.getTimeline(bob)
+        
+        // Assert that the message with the mention is in Bob's timeline
+        assertTrue(
+            bobTimeline.any { it.user == bob && it.content == messageWithMention },
+            "Bob's timeline should contain the message with the mention"
+        )
+        
+        // Assert that the message content is preserved exactly as it was entered
+        assertEquals(messageWithMention, bobTimeline[0].content,
+            "The message content should be preserved exactly, including the @mention")
+    }
 }
