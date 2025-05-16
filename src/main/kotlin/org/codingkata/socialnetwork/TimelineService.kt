@@ -2,7 +2,7 @@ package org.codingkata.socialnetwork
 
 class TimelineService {
     // A map to store user timelines, where the key is the username and the value is the list of messages
-    private val timelines: MutableMap<String, MutableList<String>> = mutableMapOf()
+    private val timelines: MutableMap<String, MutableList<Message>> = mutableMapOf()
     
     // A map to store user subscriptions, where the key is the follower and the value is a set of users they follow
     private val subscriptions: MutableMap<String, MutableSet<String>> = mutableMapOf()
@@ -12,11 +12,14 @@ class TimelineService {
      * Messages are added to the beginning of the list to maintain reverse chronological order
      * 
      * @param user The username of the person publishing the message
-     * @param message The content of the message
+     * @param messageContent The content of the message
      */
-    fun publish(user: String, message: String) {
+    fun publish(user: String, messageContent: String) {
         // Get or create the user's timeline
         val userTimeline = timelines.getOrPut(user) { mutableListOf() }
+        
+        // Create a Message object with the current timestamp
+        val message = Message(user, messageContent)
         
         // Add the message to the beginning of the user's timeline (index 0)
         // This ensures newer messages appear first (reverse chronological order)
@@ -30,7 +33,7 @@ class TimelineService {
      * @param user The username whose timeline to retrieve
      * @return List of messages in the user's timeline in reverse chronological order
      */
-    fun getTimeline(user: String): List<String> {
+    fun getTimeline(user: String): List<Message> {
         // Return the user's timeline or an empty list if the user has no timeline
         return timelines.getOrDefault(user, mutableListOf())
     }

@@ -13,16 +13,19 @@ class TimelineServiceTest {
         
         // Define a user "Alice" and a message "Hello, world!"
         val user = "Alice"
-        val message = "Hello, world!"
+        val messageContent = "Hello, world!"
         
         // Alice posts the message
-        timelineService.publish(user, message)
+        timelineService.publish(user, messageContent)
         
         // Get Alice's timeline
         val aliceTimeline = timelineService.getTimeline(user)
         
         // Assert that Alice's timeline contains the published message
-        assertTrue(aliceTimeline.contains(message), "Alice's timeline should contain the published message")
+        assertTrue(
+            aliceTimeline.any { it.user == user && it.content == messageContent },
+            "Alice's timeline should contain the published message"
+        )
     }
     
     @Test
@@ -34,19 +37,24 @@ class TimelineServiceTest {
         val user = "Alice"
         
         // Alice publishes "First message"
-        val firstMessage = "First message"
-        timelineService.publish(user, firstMessage)
+        val firstMessageContent = "First message"
+        timelineService.publish(user, firstMessageContent)
+        
+        // Sleep to ensure distinct timestamps for reliable testing
+        Thread.sleep(5)
         
         // Alice then publishes "Second message"
-        val secondMessage = "Second message"
-        timelineService.publish(user, secondMessage)
+        val secondMessageContent = "Second message"
+        timelineService.publish(user, secondMessageContent)
         
         // Get Alice's timeline
         val aliceTimeline = timelineService.getTimeline(user)
         
         // Assert that "Second message" appears before "First message"
-        assertEquals(secondMessage, aliceTimeline[0], "Second message should be first in the timeline")
-        assertEquals(firstMessage, aliceTimeline[1], "First message should be second in the timeline")
+        assertEquals(secondMessageContent, aliceTimeline[0].content, 
+            "Second message should be first in the timeline")
+        assertEquals(firstMessageContent, aliceTimeline[1].content, 
+            "First message should be second in the timeline")
     }
     
     @Test
@@ -56,16 +64,18 @@ class TimelineServiceTest {
         
         // Alice publishes a message
         val alice = "Alice"
-        val aliceMessage = "Alice's message"
-        timelineService.publish(alice, aliceMessage)
+        val aliceMessageContent = "Alice's message"
+        timelineService.publish(alice, aliceMessageContent)
         
         // Bob views Alice's timeline
         val bob = "Bob"
         val aliceTimelineViewedByBob = timelineService.getTimeline(alice)
         
         // Assert that Bob sees Alice's message
-        assertTrue(aliceTimelineViewedByBob.contains(aliceMessage), 
-            "Bob should be able to see Alice's message when viewing her timeline")
+        assertTrue(
+            aliceTimelineViewedByBob.any { it.user == alice && it.content == aliceMessageContent },
+            "Bob should be able to see Alice's message when viewing her timeline"
+        )
     }
     
     @Test
