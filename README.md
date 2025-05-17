@@ -25,7 +25,7 @@ This can be addressed by using TDD to provide from the beginning long-living exe
 To make TDD more strict and comparable, a technique [test-commit-revert](https://nvoulgaris.com/test-commit-revert/) is used. This gives us a more strict ruleset how to do TDD, but also
 allows us to do more analysis comparing development with and without agentic help. 
 
-> **Note:** The `./tcr.sh` script supports a `-c` parameter (e.g., `./tcr.sh -c`). This allows you to pass a command to be executed automatically after each TCR cycle, which is especially helpful for agentic workflows or automation scenarios where you want to trigger additional actions (such as LLM agents, notifications, or metrics collection) after each commit or revert.
+> **Note:** For claude code, and other agentic tools, execute `./tcr.sh- c` to run a tcr cycle. The `-c` parameter allows you to pass a command to be executed automatically after each TCR cycle, which is especially helpful for agentic workflows or automation scenarios where you want to trigger additional actions (such as LLM agents, notifications, or metrics collection) after each commit or revert.
 
 ### The development cycle
 
