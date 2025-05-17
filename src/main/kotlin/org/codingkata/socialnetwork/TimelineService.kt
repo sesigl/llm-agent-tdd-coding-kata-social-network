@@ -1,4 +1,3 @@
 package org.codingkata.socialnetwork
 
-class TimelineService {
-}
+class TimelineService

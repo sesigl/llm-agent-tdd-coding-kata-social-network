@@ -75,7 +75,7 @@ run_tcr_cycle() {
   # capture maven output with colors (force ANSI) while printing live
   TMP_OUT=$(mktemp)
   TEST_OUTPUT=""  # Initialize to avoid unbound variable
-  if mvn -Dstyle.color=always clean test 2>&1 | tee "$TMP_OUT"; then
+  if mvn -Dstyle.color=always clean verify 2>&1 | tee "$TMP_OUT"; then
     TEST_OUTPUT=$(cat "$TMP_OUT"); rm "$TMP_OUT"
     echo "Tests passed. Preparing commit..."
     git add -A
@@ -135,7 +135,7 @@ while true; do
   elif [[ $key == "f" || $key == "F" ]]; then
     # just run tests, no git actions
     echo "Running tests only (no commit/revert)..."
-    mvn clean test || true
+    mvn clean verify || true
   else
     echo "Unrecognized key '$key' – please press Enter or f."
   fi
