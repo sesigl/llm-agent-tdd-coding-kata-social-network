@@ -23,6 +23,19 @@
 - **Kotlin Version:** Target Kotlin 2.1.21.
 - **Java Version:** Target Java 21 LTS.
 
+# Domain-Driven Design Principles
+
+- **Work with existing domain classes:** NEVER create duplicate or parallel implementations of domain concepts. For example, if there's a `Timeline` class, don't create a `TimelineAggregate` class that does the same thing.
+- **Understand DDD terminology correctly:**
+  - **Entities:** Domain objects with identity that changes over time (usually has an ID)
+  - **Value Objects:** Immutable objects defined by their attributes (no identity)
+  - **Aggregates:** Clusters of entities and value objects with a clear boundary and a single entity as the root
+  - **Repositories:** Interfaces for retrieving and persisting aggregates
+  - **Services:** Operations that don't naturally belong to entities or value objects
+- **Repository naming convention:** A repository for an aggregate is named after the aggregate root (e.g., `TimelineRepository` for the `Timeline` aggregate)
+- **Refactoring approach:** When implementing DDD principles, modify existing classes to align with DDD patterns rather than creating parallel implementations. For example, refactor a `Timeline` class to be an aggregate root rather than creating a new `TimelineAggregate` class.
+- **Always examine the codebase completely before introducing new concepts or classes** to avoid duplication and confusion.
+
 # Getting Help & Clarification
 
 - ALWAYS ask for clarification from the human rather than making assumptions, especially if a requirement in `spec.md` is ambiguous or conflicts with rules in this `Claude.md`.
