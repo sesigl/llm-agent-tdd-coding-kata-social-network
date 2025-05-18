@@ -11,4 +11,15 @@ class UserTest {
 
         assertEquals(username, user.username)
     }
+
+    @Test
+    fun `users with same username should be equal`() {
+        val username = "alice"
+
+        val user1 = User(username)
+        val user2 = User(username)
+
+        assertEquals(user1, user2)
+        assertEquals(user1.hashCode(), user2.hashCode())
+    }
 }
