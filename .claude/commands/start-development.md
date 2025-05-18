@@ -4,5 +4,4 @@
     - If you confirm it's already done, skip it.
     - Otherwise, implement it as described following the tcr cycle approach described in @spec.md executing `./tcr.sh -c`.
     - Update **@prompt_plan.md** to mark this prompt as completed.
-3. After you finish each prompt, pause and wait for user review or feedback.
-4. Repeat with the next unfinished prompt as directed by the user.
+3. Follow exactly the development process described in @/.claude/docs/development-process.md
