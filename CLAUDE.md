@@ -33,13 +33,13 @@
 - **TDD (Test-Driven Development) + TCR (Test commit revert) is MANDATORY:**
     1. Write tests *before* writing the implementation code.
     2. Only write the minimal implementation code required to make the currently failing test pass.
+       - Make TINY, incremental steps - implement only a few closely related test methods at a time, verify with TCR, and only then move to the next test. Never implement methods in multiple different test files in one step (e.g., don't add tests for both User.kt and Message.kt simultaneously).
     3. Refactor code continuously, ensuring all tests remain green.
     4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
-    5. Make TINY, incremental steps - implement only a few closely related test methods at a time, verify with TCR, and only then move to the next test. Never implement methods in multiple different test files in one step (e.g., don't add tests for both User.kt and Message.kt simultaneously).
-    6. After each change (test or implementation), run `./tcr.sh -c` to verify the change:
-       - If successful (commit created), ask the user for feedback to continue or change something
-       - If it reverts (changes lost), try again with a different approach
-       - Never proceed with additional changes until the current change has been committed successfully
+    5. After each change (test or implementation), run `./tcr.sh -c` to verify the change:
+         - If successful (commit created), ask the user for feedback to continue or change something
+         - If it reverts (changes lost), try again with a different approach
+         - Never proceed with additional changes until the current change has been committed successfully
 
 - Tests MUST cover the functionality being implemented, including edge cases and error conditions.
 - DO NOT write redundant tests for functionality already provided by language features:
