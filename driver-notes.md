@@ -1,1 +1,0 @@
-- do not put domain logic like `messages.sortedByDescending { it.timestamp }` into application service. 

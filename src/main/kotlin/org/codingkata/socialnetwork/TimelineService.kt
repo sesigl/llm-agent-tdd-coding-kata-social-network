@@ -14,4 +14,9 @@ class TimelineService(
     }
 
     fun getTimeline(userId: UserId): List<Message> = repository.getMessagesChronologicallyDescending(userId)
+
+    fun getTimeline(
+        userId: UserId,
+        query: TimelineQuery,
+    ): List<Message> = repository.getMessagesWithQuery(userId, query)
 }
