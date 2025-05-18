@@ -89,7 +89,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 1.3: Refactoring - Domain Model Enrichment ☐
+### Task 1.3: Refactoring - Domain Model Enrichment ☑️
 
 **Goal:** Refactor the initial domain model to add richer semantics and validation
 
