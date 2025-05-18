@@ -1,43 +1,37 @@
 package org.codingkata.socialnetwork.repository
 
 import org.codingkata.socialnetwork.Message
+import org.codingkata.socialnetwork.Timeline
+import org.codingkata.socialnetwork.TimelineId
 import org.codingkata.socialnetwork.TimelineQuery
 import org.codingkata.socialnetwork.UserId
 import java.util.concurrent.ConcurrentHashMap
 
 class TimelineRepository {
-    private val messagesByUser = ConcurrentHashMap<UserId, MutableList<Message>>()
+    private val timelines = ConcurrentHashMap<TimelineId, Timeline>()
 
-    fun addMessage(message: Message) {
-        messagesByUser
-            .computeIfAbsent(message.author) { mutableListOf() }
-            .add(message)
+    fun getOrCreateTimeline(userId: UserId): Timeline {
+        val timelineId = TimelineId(userId)
+        return timelines.computeIfAbsent(timelineId) { Timeline(it) }
     }
 
-    fun getMessagesFor(userId: UserId): List<Message> = messagesByUser[userId]?.toList() ?: emptyList()
+    fun addMessage(message: Message) {
+        val timeline = getOrCreateTimeline(message.author)
+        timeline.addMessage(message)
+    }
 
-    fun getMessagesChronologicallyDescending(userId: UserId): List<Message> = getMessagesFor(userId).sortedByDescending { it.timestamp }
+    fun getMessagesFor(userId: UserId): List<Message> {
+        val timeline = getOrCreateTimeline(userId)
+        return timeline.getMessages()
+    }
+
+    fun getMessagesChronologicallyDescending(userId: UserId): List<Message> = getMessagesFor(userId)
 
     fun getMessagesWithQuery(
         userId: UserId,
         query: TimelineQuery,
     ): List<Message> {
-        var messages = getMessagesFor(userId)
-
-        query.afterTimestamp?.let { afterTimestamp ->
-            messages = messages.filter { message -> message.timestamp > afterTimestamp }
-        }
-
-        query.beforeTimestamp?.let { beforeTimestamp ->
-            messages = messages.filter { message -> message.timestamp < beforeTimestamp }
-        }
-
-        messages = messages.sortedByDescending { it.timestamp }
-
-        query.limit?.let { limit ->
-            messages = messages.take(limit)
-        }
-
-        return messages
+        val timeline = getOrCreateTimeline(userId)
+        return timeline.getMessages(query)
     }
 }
