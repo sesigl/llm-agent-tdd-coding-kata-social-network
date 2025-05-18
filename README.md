@@ -31,6 +31,9 @@ allows us to do more analysis comparing development with and without agentic hel
 
 TCR is a more strict TDD. I recommend the following executing cycle (which might be different how others do TCR):
 
+
+#### Development Cycle for Humans
+
 Preparation:
 - run `./tcr.sh` to start the TCR process
 
@@ -39,6 +42,18 @@ Cycle:
 2. Do the implementation
 3. Press "ENTER" to execute the TCR check. If tests are green then the changes are committed. If not the changed are reset. In both cases there is an empty or not empty commit with a useful commit message leveraging Gemini for traceability.
 4. Start again with Step 1
+
+#### Development Cycle for Agentic Development
+
+1. **Write a failing test** for the next small increment of functionality
+2. **Implement** the minimal code needed to make the test pass
+3. Run TCR cycle using:
+    - Execute `./tcr.sh -c` to run a single TCR cycle
+    - The `-c` parameter runs one cycle and exits, allowing integration with CI/CD or agent workflows
+    - This is especially helpful for agentic development where LLM agents, notifications, or metrics can be triggered after each commit/revert
+    - If tests pass: Changes are automatically committed with an AI-generated summary
+    - If tests fail: Changes are automatically reverted to the last working state
+4. Repeat for the next increment of functionality
 
 ## The Kata
 
