@@ -36,8 +36,17 @@
     3. Refactor code continuously, ensuring all tests remain green.
     4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
     5. Make TINY, incremental steps - implement only a few closely related test methods at a time, verify with TCR, and only then move to the next test. Never implement methods in multiple different test files in one step (e.g., don't add tests for both User.kt and Message.kt simultaneously).
+    6. After each change (test or implementation), run `./tcr.sh -c` to verify the change:
+       - If successful (commit created), ask the user for feedback to continue or change something
+       - If it reverts (changes lost), try again with a different approach
+       - Never proceed with additional changes until the current change has been committed successfully
 
 - Tests MUST cover the functionality being implemented, including edge cases and error conditions.
+- DO NOT write redundant tests for functionality already provided by language features:
+    - DO NOT test equality/hashCode for Kotlin data classes with only simple fields - this is already handled by the data class
+    - DO NOT test trivial property getters/setters that don't contain business logic
+    - DO focus on testing actual behavior and domain logic, not implementation details
+- Focus on behavior-driven testing (BDD) approach - write tests that describe what the system should do, not how it does it
 - NEVER ignore the output of the system or the tests. Logs and messages often contain CRITICAL information for debugging.
 - TEST OUTPUT MUST BE PRISTINE TO PASS. No unexpected errors or warnings in logs during test runs.
 - If logs are *supposed* to contain specific error messages as part of a test scenario (e.g., testing error handling), these MUST be captured and asserted.
