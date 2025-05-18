@@ -40,6 +40,15 @@
 - TEST OUTPUT MUST BE PRISTINE TO PASS. No unexpected errors or warnings in logs during test runs.
 - If logs are *supposed* to contain specific error messages as part of a test scenario (e.g., testing error handling), these MUST be captured and asserted.
 - DO NOT add meaningless comments in tests like "// Arrange", "// Act", "// Assert". Let the test code speak for itself through clear structure and naming.
+- **Test Positioning and Scope:**
+    - Place the majority of tests at the service/application layer rather than at the individual class level
+    - Tests should primarily focus on behaviors and use cases rather than implementation details
+    - Minimize tests that are tightly coupled to implementation details, as these make refactoring difficult
+    - Lower-level tests are appropriate only when:
+        1. Testing complex algorithms with many edge cases
+        2. Testing reusable infrastructure components
+        3. The logic is genuinely isolated and unlikely to be refactored between classes
+    - When refactoring to move logic between classes, tests should require minimal changes
 - Focus on Behavior and Contracts: Good tests define and verify the expected behavior of a system, service, class, or method. They focus on the contract or public interface exposed to consumers. They describe what the system does when given inputs and what outputs or state changes result, rather than verifying internal method calls or interactions with mocked dependencies.
 - Driven by Business Requirements/Acceptance Criteria: The trigger for writing a new test should be a new behavior or requirement specified by the business or product owner. Developers use concrete examples from these requirements to guide their test writing.
 - Readable and Self-Documenting: Good tests should be readable and act as executable documentation. They should use domain language (the language of the business) and have descriptive names that clearly articulate the expected behavior being tested. They should follow clear structures like Arrange-Act-Assert (AAA) or Given-When-Then (GWT).
