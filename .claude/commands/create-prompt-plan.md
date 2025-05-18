@@ -73,20 +73,20 @@ Below is a comprehensive, iterative plan to build a line-by-line BASIC interpret
 
 ### Phase 1: Core Infrastructure
 
-- **Chunk 1.1: Project Setup & Basic Skeleton** ✅
+- **Chunk 1.1: Project Setup & Basic Skeleton**
     - Create a basic C project with a main entry point (`main.c`).
     - Outline data structures for tokens, lines, and variables in header files.
 
-- **Chunk 1.2: Tokenization** ✅
+- **Chunk 1.2: Tokenization**
     - Write a tokenizer that reads one line of text and produces a list of tokens.
     - Support numbers, string literals, keywords (`PRINT`, `GOTO`, etc.), symbols (`=`, `+`, etc.).
 
-- **Chunk 1.3: Line Storage & Parsing** ✅
+- **Chunk 1.3: Line Storage & Parsing**
     - Create a structure to store all lines by line number.
     - Parse each tokenized line to associate line numbers with their tokens.
     - Verify that line numbers are sorted/managed for the program.
 
-- **Chunk 1.4: Symbol Table & Variable Management** ⚠️ (Partially Complete)
+- **Chunk 1.4: Symbol Table & Variable Management**
     - Implement a simple symbol table for variable lookup.
     - Start with an array or hash map to store variable names and their values.
     - Prepare to allow dynamic types (string vs numeric) later.
@@ -165,13 +165,13 @@ Below we iterate further, ensuring each chunk is small enough for safe implement
 
 ### Example: Chunk 1.2 (Tokenization) Detailed Breakdown
 
-1. **Create a `token.h` to define token types** (keywords, identifiers, numbers, strings, operators). ✅
-2. **Create a `tokenizer.c`** with functions like `init_tokenizer()`, `get_next_token()`, etc. ✅
-3. **Implement a function to read a line of text** from standard input or file. ✅
-4. **Split line into raw tokens** using whitespace as a delimiter. ✅
-5. **Identify token type** (number, string, keyword, symbol). ✅
-6. **Store tokens** in a dynamic array or linked list. ✅
-7. **Test the tokenizer** with a few sample lines (e.g., `10 PRINT "HELLO"`). ✅
+1. **Create a `token.h` to define token types** (keywords, identifiers, numbers, strings, operators).
+2. **Create a `tokenizer.c`** with functions like `init_tokenizer()`, `get_next_token()`, etc.
+3. **Implement a function to read a line of text** from standard input or file.
+4. **Split line into raw tokens** using whitespace as a delimiter.
+5. **Identify token type** (number, string, keyword, symbol).
+6. **Store tokens** in a dynamic array or linked list.
+7. **Test the tokenizer** with a few sample lines (e.g., `10 PRINT "HELLO"`).
 
 ### Example: Chunk 2.1 (Execution Loop) Detailed Breakdown
 
@@ -199,7 +199,7 @@ Below are example prompts you could feed into a code-generation system. Each one
 
 ---
 
-### Prompt 1: Project Skeleton and Data Structures ✅
+### Prompt 1: Project Skeleton and Data Structures
 
 ```
 Write C code for the initial project skeleton of a BASIC interpreter.
@@ -211,7 +211,7 @@ Include:
 
 ---
 
-### Prompt 2: Tokenizer ✅
+### Prompt 2: Tokenizer
 
 ```
 Extend the project by creating a tokenizer.
@@ -226,7 +226,7 @@ Add:
 
 ---
 
-### Prompt 3: Line Storage & Parsing ✅
+### Prompt 3: Line Storage & Parsing
 
 ```
 Add a line manager to store BASIC program lines by line number.
@@ -240,7 +240,7 @@ Add a line manager to store BASIC program lines by line number.
 
 ---
 
-### Prompt 4: Symbol Table & Variable Management ⚠️ (Partially Complete)
+### Prompt 4: Symbol Table & Variable Management
 
 ```
 Create a simple symbol table for variables in symbol_table.c.
