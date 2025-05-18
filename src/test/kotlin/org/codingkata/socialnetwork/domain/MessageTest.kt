@@ -14,4 +14,16 @@ class MessageTest {
         assertEquals(content, message.content)
         assertEquals(user, message.author)
     }
+
+    @Test
+    fun `messages with same content and author should be equal`() {
+        val user = User("alice")
+        val content = "Hello, world!"
+
+        val message1 = Message(content, user)
+        val message2 = Message(content, user)
+
+        assertEquals(message1, message2)
+        assertEquals(message1.hashCode(), message2.hashCode())
+    }
 }
