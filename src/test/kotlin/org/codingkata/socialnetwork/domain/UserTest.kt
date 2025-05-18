@@ -2,6 +2,7 @@ package org.codingkata.socialnetwork.domain
 
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 
 class UserTest {
     @Test
@@ -21,5 +22,14 @@ class UserTest {
 
         assertEquals(user1, user2)
         assertEquals(user1.hashCode(), user2.hashCode())
+    }
+
+    @Test
+    fun `users with different usernames should not be equal`() {
+        val user1 = User("alice")
+        val user2 = User("bob")
+
+        assertNotEquals(user1, user2)
+        assertNotEquals(user1.hashCode(), user2.hashCode())
     }
 }

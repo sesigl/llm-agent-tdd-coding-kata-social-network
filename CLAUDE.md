@@ -35,7 +35,7 @@
     2. Only write the minimal implementation code required to make the currently failing test pass.
     3. Refactor code continuously, ensuring all tests remain green.
     4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
-    5. Make TINY, incremental steps - implement one test at a time, verify with TCR, and only then move to the next test.
+    5. Make TINY, incremental steps - implement only a few test methods (that are heavy related) at a time, verify with TCR, and only then move to the next test.
 
 - Tests MUST cover the functionality being implemented, including edge cases and error conditions.
 - NEVER ignore the output of the system or the tests. Logs and messages often contain CRITICAL information for debugging.
