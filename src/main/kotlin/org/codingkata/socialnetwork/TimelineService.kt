@@ -4,8 +4,8 @@ import org.codingkata.socialnetwork.repository.FollowRepository
 import org.codingkata.socialnetwork.repository.TimelineRepository
 
 class TimelineService(
-    private val timelineRepository: TimelineRepository,
-    private val followRepository: FollowRepository? = null,
+    private val timelineRepository: TimelineRepository = TimelineRepository(),
+    private val followRepository: FollowRepository? = FollowRepository(),
 ) {
     fun postMessage(
         userId: UserId,

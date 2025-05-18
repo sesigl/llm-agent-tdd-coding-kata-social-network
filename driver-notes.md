@@ -1,2 +1,3 @@
 - refactor all tests and setup default parameters so that tests become less duplicated setting up the service
 - improve the package structure, right now there are many impls and tests in a single package that is hard to maintain
+- ensure there are no default null parameters for dependency injection via constructor
