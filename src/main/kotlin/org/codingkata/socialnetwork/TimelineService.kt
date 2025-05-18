@@ -1,3 +1,15 @@
 package org.codingkata.socialnetwork
 
-class TimelineService
+import org.codingkata.socialnetwork.repository.TimelineRepository
+
+class TimelineService(
+    private val repository: TimelineRepository,
+) {
+    fun postMessage(
+        userId: UserId,
+        content: String,
+    ) {
+        val message = Message(content, userId)
+        repository.addMessage(message)
+    }
+}

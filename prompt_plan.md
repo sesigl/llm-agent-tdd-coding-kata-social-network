@@ -28,7 +28,7 @@ This document outlines a detailed plan for implementing a social network applica
 
 ## Phase 1: Core Domain Model & Timeline Publishing
 
-### Task 1.1: Define Core Domain Model ☐
+### Task 1.1: Define Core Domain Model ☑️
 
 **Goal:** Create the essential domain entities and value objects needed for the social network
 
@@ -37,7 +37,7 @@ This document outlines a detailed plan for implementing a social network applica
   - `UserId.kt` - Represents a unique user identifier
   - `Message.kt` - Represents a timeline message with content and metadata
   - `Timestamp.kt` - Wraps DateTime functionality for domain clarity
-- Repository interface:
+- Repository:
   - `TimelineRepository.kt` - Repository for storing and retrieving timeline messages
 
 **Implementation Prompt:**
@@ -49,8 +49,8 @@ Start by creating these value objects:
 2. Message - A data class containing message content, author (UserId), and timestamp
 3. Timestamp - A wrapper around java.time.Instant for domain clarity
 
-Then create a repository interface:
-- TimelineRepository - Interface with methods to store and retrieve messages
+Then create a repository:
+- TimelineRepository - With methods to store and retrieve messages
 
 For each class:
 - First write tests in the corresponding test file
@@ -69,9 +69,7 @@ Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 **Deliverables:**
 - Service implementation:
   - Modify `TimelineService.kt` to handle message publishing
-- Repository implementation:
-  - `InMemoryTimelineRepository.kt` - In-memory implementation of TimelineRepository
-- Unit tests for both components
+- Unit tests for the service
 
 **Implementation Prompt:**
 ```
@@ -80,11 +78,6 @@ Implement the ability for users to publish messages to their personal timelines 
 1. Update TimelineService.kt to include:
    - A dependency on TimelineRepository
    - A postMessage(userId: UserId, content: String) method that creates and stores a new message
-
-2. Create InMemoryTimelineRepository.kt:
-   - Implement the TimelineRepository interface
-   - Use a concurrent map to store messages by userId
-   - Store messages in chronological order
 
 For each component:
 - First write tests in the corresponding test file (TimelineServiceTest.kt)
@@ -148,7 +141,7 @@ Implement timeline reading capabilities in Kotlin, allowing users to view other 
    - A getTimeline(userId: UserId) method that returns a user's messages in chronological order
    - Proper handling for users with no messages (return empty list, not null)
 
-2. Update InMemoryTimelineRepository.kt if needed:
+2. Update TimelineRepository if needed:
    - Ensure retrieval of messages is efficient
    - Maintain chronological ordering
 
