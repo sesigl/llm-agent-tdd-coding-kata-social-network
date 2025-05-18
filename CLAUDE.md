@@ -60,6 +60,9 @@
   3. runs the tests
   4. checks for other ktlint violations
 
+# Development process and interaction with me
+- @/.claude/docs/development-process.md
+
 # Specific Technology Documentation Links
 # (Claude, you MUST consult these for detailed guidance on the respective technologies)
 
