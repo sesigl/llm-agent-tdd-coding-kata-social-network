@@ -28,7 +28,7 @@ This document outlines a detailed plan for implementing a social network applica
 
 ## Phase 1: Core Domain Model & Timeline Publishing
 
-### Task 1.1: Define Core Domain Model ☑️
+### Task 1.1: Define Core Domain Model 
 
 **Goal:** Create the essential domain entities and value objects needed for the social network
 
@@ -62,7 +62,7 @@ For each class:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 1.2: Implement Timeline Service Publishing ☑️
+### Task 1.2: Implement Timeline Service Publishing 
 
 **Goal:** Enable users to publish messages to their personal timelines
 
@@ -89,7 +89,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 1.3: Refactoring - Domain Model Enrichment ☑️
+### Task 1.3: Refactoring - Domain Model Enrichment 
 
 **Goal:** Refactor the initial domain model to add richer semantics and validation
 
@@ -123,7 +123,7 @@ Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 
 ## Phase 2: Timeline Reading & Query Capabilities
 
-### Task 2.1: Implement Timeline Reading ☐
+### Task 2.1: Implement Timeline Reading
 
 **Goal:** Enable users to view another user's timeline
 
@@ -160,7 +160,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 2.2: Add Richer Timeline Querying ☐
+### Task 2.2: Add Richer Timeline Querying
 
 **Goal:** Enhance timeline reading with filtering and pagination
 
@@ -202,7 +202,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 2.3: Refactoring - Introduce Timeline Aggregate ☐
+### Task 2.3: Refactoring - Introduce Timeline Aggregate
 
 **Goal:** Refactor to use proper DDD Aggregate pattern for timelines
 
@@ -245,7 +245,7 @@ Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 
 ## Phase 3: Social Graph & Aggregated Views
 
-### Task 3.1: Implement Following Mechanism ☐
+### Task 3.1: Implement Following Mechanism
 
 **Goal:** Enable users to follow other users
 
@@ -288,7 +288,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 3.2: Implement Aggregated Timeline ☐
+### Task 3.2: Implement Aggregated Timeline
 
 **Goal:** Allow users to view an aggregated timeline of all followed users' posts
 
@@ -327,7 +327,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 3.3: Refactoring - Domain Events ☐
+### Task 3.3: Refactoring - Domain Events
 
 **Goal:** Refactor to use Domain Events for cross-aggregate communication
 
@@ -373,7 +373,7 @@ Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 
 ## Phase 4: Enhanced Content Features
 
-### Task 4.1: Implement @ Mentions ☐
+### Task 4.1: Implement @ Mentions
 
 **Goal:** Support mentioning users with @ syntax in messages
 
@@ -421,7 +421,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 4.2: Implement Clickable Web Links ☐
+### Task 4.2: Implement Clickable Web Links
 
 **Goal:** Enable detection and interaction with URLs in messages
 
@@ -469,7 +469,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 4.3: Refactoring - Rich Content Processing ☐
+### Task 4.3: Refactoring - Rich Content Processing
 
 **Goal:** Refactor to use a more extensible content processing pipeline
 
@@ -520,7 +520,7 @@ Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 
 ## Phase 5: Privacy & Permissions
 
-### Task 5.1: Implement Direct Messaging ☐
+### Task 5.1: Implement Direct Messaging
 
 **Goal:** Enable users to send private messages visible only to the recipient
 
@@ -563,7 +563,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 5.2: Implement Visibility Controls ☐
+### Task 5.2: Implement Visibility Controls
 
 **Goal:** Add granular visibility controls for all messages
 
@@ -610,7 +610,7 @@ For each component:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 5.3: Final Refactoring - Domain Model Consolidation ☐
+### Task 5.3: Final Refactoring - Domain Model Consolidation
 
 **Goal:** Consolidate the domain model for clarity, consistency, and maintainability
 
@@ -667,6 +667,6 @@ This implementation plan is designed to be followed sequentially, with each task
    - Implement minimal code to make tests pass
    - Refactor while keeping tests green
 3. Execute TCR cycles using `./tcr.sh -c` after each test+implementation pair
-4. Mark tasks as completed (☑️) once finished and verified
+4. Mark tasks as completed () once finished and verified
 
 The plan integrates Domain-Driven Design principles progressively, starting with simple implementations and refactoring toward richer domain models as the application evolves.
