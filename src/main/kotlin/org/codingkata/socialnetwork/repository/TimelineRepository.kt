@@ -14,4 +14,6 @@ class TimelineRepository {
     }
 
     fun getMessagesFor(userId: UserId): List<Message> = messagesByUser[userId]?.toList() ?: emptyList()
+
+    fun getMessagesChronologicallyDescending(userId: UserId): List<Message> = getMessagesFor(userId).sortedByDescending { it.timestamp }
 }

@@ -13,8 +13,5 @@ class TimelineService(
         repository.addMessage(message)
     }
 
-    fun getTimeline(userId: UserId): List<Message> {
-        val messages = repository.getMessagesFor(userId)
-        return messages.sortedByDescending { it.timestamp }
-    }
+    fun getTimeline(userId: UserId): List<Message> = repository.getMessagesChronologicallyDescending(userId)
 }
