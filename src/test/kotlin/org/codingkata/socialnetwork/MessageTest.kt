@@ -95,4 +95,50 @@ class MessageTest {
 
         assertNotEquals(message1, message2)
     }
+
+    @Test
+    fun `factory method should create message with valid content`() {
+        val author = UserId("alice")
+        val content = "Hello, world!"
+
+        val message = Message.create(content, author)
+
+        assertEquals(content, message.content)
+        assertEquals(author, message.author)
+    }
+
+    @Test
+    fun `factory method should reject empty content`() {
+        val author = UserId("alice")
+
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                Message.create("", author)
+            }
+
+        assertEquals("Message content cannot be empty or blank", exception.message)
+    }
+
+    @Test
+    fun `factory method should reject content exceeding maximum length`() {
+        val author = UserId("alice")
+        val longContent = "a".repeat(281) // Max length + 1
+
+        val exception =
+            assertThrows<IllegalArgumentException> {
+                Message.create(longContent, author)
+            }
+
+        assertEquals("Message content cannot exceed 280 characters", exception.message)
+    }
+
+    @Test
+    fun `factory method should allow content at maximum length`() {
+        val author = UserId("alice")
+        val maxLengthContent = "a".repeat(280) // Max length exactly
+
+        val message = Message.create(maxLengthContent, author)
+
+        assertEquals(maxLengthContent, message.content)
+    }
 }

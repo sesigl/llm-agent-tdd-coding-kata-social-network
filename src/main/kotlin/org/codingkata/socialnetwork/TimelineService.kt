@@ -9,7 +9,7 @@ class TimelineService(
         userId: UserId,
         content: String,
     ) {
-        val message = Message(content, userId)
+        val message = Message.create(content, userId)
         repository.addMessage(message)
     }
 }

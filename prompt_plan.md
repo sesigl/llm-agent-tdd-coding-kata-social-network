@@ -62,7 +62,7 @@ For each class:
 Execute a TCR cycle after each test + implementation using ./tcr.sh -c
 ```
 
-### Task 1.2: Implement Timeline Service Publishing ☐
+### Task 1.2: Implement Timeline Service Publishing ☑️
 
 **Goal:** Enable users to publish messages to their personal timelines
 
