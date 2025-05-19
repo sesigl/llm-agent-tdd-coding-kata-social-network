@@ -98,4 +98,106 @@ class TimelineServiceTest {
 
         assertTrue(timeline.isEmpty())
     }
+
+    @Test
+    fun `user can follow another user`() {
+        val alice = User("alice")
+        val bob = User("bob")
+
+        timelineService.followUser(alice, bob)
+
+        val followedUsers = timelineService.getFollowedUsers(alice)
+        assertEquals(1, followedUsers.size)
+        assertEquals(bob, followedUsers[0])
+    }
+
+    @Test
+    fun `user can follow multiple users`() {
+        val alice = User("alice")
+        val bob = User("bob")
+        val charlie = User("charlie")
+
+        timelineService.followUser(alice, bob)
+        timelineService.followUser(alice, charlie)
+
+        val followedUsers = timelineService.getFollowedUsers(alice)
+        assertEquals(2, followedUsers.size)
+        assertTrue(followedUsers.contains(bob))
+        assertTrue(followedUsers.contains(charlie))
+    }
+
+    @Test
+    fun `user cannot follow the same user twice`() {
+        val alice = User("alice")
+        val bob = User("bob")
+
+        timelineService.followUser(alice, bob)
+        timelineService.followUser(alice, bob)
+
+        val followedUsers = timelineService.getFollowedUsers(alice)
+        assertEquals(1, followedUsers.size)
+    }
+
+    @Test
+    fun `aggregated timeline contains messages from followed users`() {
+        val alice = User("alice")
+        val bob = User("bob")
+        val charlie = User("charlie")
+
+        timelineService.postMessage(alice, "Alice's message")
+        timelineService.postMessage(bob, "Bob's message")
+        timelineService.postMessage(charlie, "Charlie's message")
+
+        timelineService.followUser(alice, bob)
+        timelineService.followUser(alice, charlie)
+
+        val aggregatedTimeline = timelineService.getAggregatedTimeline(alice)
+
+        assertEquals(3, aggregatedTimeline.size)
+        assertTrue(aggregatedTimeline.any { it.content == "Alice's message" })
+        assertTrue(aggregatedTimeline.any { it.content == "Bob's message" })
+        assertTrue(aggregatedTimeline.any { it.content == "Charlie's message" })
+    }
+
+    @Test
+    fun `aggregated timeline is sorted by timestamp (newest first)`() {
+        val alice = User("alice")
+        val bob = User("bob")
+        val charlie = User("charlie")
+
+        // Follow users first to ensure all messages are included
+        timelineService.followUser(alice, bob)
+        timelineService.followUser(alice, charlie)
+
+        // Post messages with delays to ensure different timestamps
+        timelineService.postMessage(bob, "First message")
+        Thread.sleep(10)
+        timelineService.postMessage(charlie, "Second message")
+        Thread.sleep(10)
+        timelineService.postMessage(alice, "Third message")
+
+        val aggregatedTimeline = timelineService.getAggregatedTimeline(alice)
+
+        assertEquals(3, aggregatedTimeline.size)
+        assertEquals("Third message", aggregatedTimeline[0].content)
+        assertEquals("Second message", aggregatedTimeline[1].content)
+        assertEquals("First message", aggregatedTimeline[2].content)
+    }
+
+    @Test
+    fun `aggregated timeline includes user's own messages`() {
+        val alice = User("alice")
+        val bob = User("bob")
+
+        timelineService.postMessage(alice, "Alice's message")
+        timelineService.postMessage(bob, "Bob's message")
+
+        timelineService.followUser(alice, bob)
+
+        val aggregatedTimeline = timelineService.getAggregatedTimeline(alice)
+
+        assertEquals(2, aggregatedTimeline.size)
+        assertTrue(aggregatedTimeline.any { it.content == "Alice's message" })
+        assertTrue(aggregatedTimeline.any { it.content == "Bob's message" })
+    }
 }
