@@ -31,19 +31,10 @@ class TimelineService {
     fun getFollowedUsers(user: User): List<User> = getOrCreateUserFollowing(user).getFollowedUsers()
 
     fun getAggregatedTimeline(user: User): List<Message> {
-        val allMessages = mutableListOf<Message>()
-
-        // Add user's own messages
-        allMessages.addAll(getTimelineForUser(user))
-
-        // Add messages from followed users
-        val followedUsers = getFollowedUsers(user)
-        followedUsers.forEach { followedUser ->
-            allMessages.addAll(getTimelineForUser(followedUser))
-        }
-
-        // Sort by timestamp (newest first)
-        return allMessages.sortedByDescending { it.timestamp }
+        val userTimeline = getOrCreateTimeline(user)
+        val userFollowing = getOrCreateUserFollowing(user)
+        val aggregatedTimeline = AggregatedTimeline(user, userTimeline, userFollowing, timelines)
+        return aggregatedTimeline.getMessages()
     }
 
     private fun getOrCreateTimeline(user: User): Timeline = timelines.getOrPut(user) { Timeline(user) }
