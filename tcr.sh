@@ -71,6 +71,7 @@ summarize_code() {
 
 # Function to run a single TCR cycle
 run_tcr_cycle() {
+  git add -A
   echo "Running tests..."
   # capture maven output with colors (force ANSI) while printing live
   TMP_OUT=$(mktemp)

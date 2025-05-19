@@ -16,12 +16,26 @@
 
 - **Immutability:** Always prefer `val` over `var`. Collections should be read-only by default where possible (e.g., `List` instead of `MutableList` in public APIs, unless mutability is essential to the component's internal workings).
 - **Data Classes:** Use data classes for DTOs and simple value objects.
-- **Null Safety:** Leverage Kotlin's null safety. Avoid platform types. Use `?.` and `?:` appropriately. Explicitly non-null assertions (`!!`) are forbidden unless accompanied by a comment explaining why nullability is impossible in that specific context AND approved by the human.
+- **Null Safety:** Leverage Kotlin's null safety. Avoid platform types. Use `?.` and `?:` appropriately. Explicitly non-null assertions (`!!`) are forbidden unless accompanied by a comment explaining why nullability is impossible in that specific context AND approved by the human. DO NOT write tests for null handling as Kotlin provides compile-time null safety - parameters should be non-nullable by default unless there's a specific requirement for optional values.
+- **Default Parameters:** Use default parameters for dependencies in service classes to reduce duplication in creating instances. This makes testing more flexible by allowing test code to either use the defaults or provide custom mocked dependencies.
 - **Configuration:** Use `application.yml` (or `application.properties` if YAML is not available) for configuration. Profile-specific configurations are encouraged (`application-dev.yml`, `application-test.yml`).
 - **API Design:** REST APIs MUST use DTOs for request and response bodies. Entities should not be directly exposed. Use standard HTTP verbs and status codes correctly. Version APIs (e.g., `/api/v1/...`).
 - **Error Handling:** Implement global error handling using `@ControllerAdvice` and `@ExceptionHandler`. Return consistent error response DTOs.
 - **Kotlin Version:** Target Kotlin 2.1.21.
 - **Java Version:** Target Java 21 LTS.
+
+# Domain-Driven Design Principles
+
+- **Work with existing domain classes:** NEVER create duplicate or parallel implementations of domain concepts. For example, if there's a `Timeline` class, don't create a `TimelineAggregate` class that does the same thing.
+- **Understand DDD terminology correctly:**
+  - **Entities:** Domain objects with identity that changes over time (usually has an ID)
+  - **Value Objects:** Immutable objects defined by their attributes (no identity)
+  - **Aggregates:** Clusters of entities and value objects with a clear boundary and a single entity as the root
+  - **Repositories:** Interfaces for retrieving and persisting aggregates
+  - **Services:** Operations that don't naturally belong to entities or value objects
+- **Repository naming convention:** A repository for an aggregate is named after the aggregate root (e.g., `TimelineRepository` for the `Timeline` aggregate)
+- **Refactoring approach:** When implementing DDD principles, modify existing classes to align with DDD patterns rather than creating parallel implementations. For example, refactor a `Timeline` class to be an aggregate root rather than creating a new `TimelineAggregate` class.
+- **Always examine the codebase completely before introducing new concepts or classes** to avoid duplication and confusion.
 
 # Getting Help & Clarification
 
@@ -40,6 +54,15 @@
 - TEST OUTPUT MUST BE PRISTINE TO PASS. No unexpected errors or warnings in logs during test runs.
 - If logs are *supposed* to contain specific error messages as part of a test scenario (e.g., testing error handling), these MUST be captured and asserted.
 - DO NOT add meaningless comments in tests like "// Arrange", "// Act", "// Assert". Let the test code speak for itself through clear structure and naming.
+- **Test Positioning and Scope:**
+    - Place the majority of tests at the service/application layer rather than at the individual class level
+    - Tests should primarily focus on behaviors and use cases rather than implementation details
+    - Minimize tests that are tightly coupled to implementation details, as these make refactoring difficult
+    - Lower-level tests are appropriate only when:
+        1. Testing complex algorithms with many edge cases
+        2. Testing reusable infrastructure components
+        3. The logic is genuinely isolated and unlikely to be refactored between classes
+    - When refactoring to move logic between classes, tests should require minimal changes
 - Focus on Behavior and Contracts: Good tests define and verify the expected behavior of a system, service, class, or method. They focus on the contract or public interface exposed to consumers. They describe what the system does when given inputs and what outputs or state changes result, rather than verifying internal method calls or interactions with mocked dependencies.
 - Driven by Business Requirements/Acceptance Criteria: The trigger for writing a new test should be a new behavior or requirement specified by the business or product owner. Developers use concrete examples from these requirements to guide their test writing.
 - Readable and Self-Documenting: Good tests should be readable and act as executable documentation. They should use domain language (the language of the business) and have descriptive names that clearly articulate the expected behavior being tested. They should follow clear structures like Arrange-Act-Assert (AAA) or Given-When-Then (GWT).
