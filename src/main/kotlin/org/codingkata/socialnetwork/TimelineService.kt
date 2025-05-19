@@ -4,7 +4,7 @@ import java.time.Instant
 
 class TimelineService {
     private val timelines: MutableMap<User, Timeline> = mutableMapOf()
-    private val followings: MutableMap<User, MutableSet<User>> = mutableMapOf()
+    private val userFollowings: MutableMap<User, UserFollowing> = mutableMapOf()
 
     fun postMessage(
         user: User,
@@ -24,11 +24,11 @@ class TimelineService {
         follower: User,
         userToFollow: User,
     ) {
-        val usersFollowed = followings.getOrPut(follower) { mutableSetOf() }
-        usersFollowed.add(userToFollow)
+        val userFollowing = getOrCreateUserFollowing(follower)
+        userFollowing.follow(userToFollow)
     }
 
-    fun getFollowedUsers(user: User): List<User> = followings[user]?.toList() ?: emptyList()
+    fun getFollowedUsers(user: User): List<User> = getOrCreateUserFollowing(user).getFollowedUsers()
 
     fun getAggregatedTimeline(user: User): List<Message> {
         val allMessages = mutableListOf<Message>()
@@ -47,4 +47,6 @@ class TimelineService {
     }
 
     private fun getOrCreateTimeline(user: User): Timeline = timelines.getOrPut(user) { Timeline(user) }
+
+    private fun getOrCreateUserFollowing(user: User): UserFollowing = userFollowings.getOrPut(user) { UserFollowing(user) }
 }
