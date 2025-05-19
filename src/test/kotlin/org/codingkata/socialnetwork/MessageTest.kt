@@ -1,9 +1,12 @@
 package org.codingkata.socialnetwork
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 class MessageTest {
     @Test
@@ -63,5 +66,45 @@ class MessageTest {
         val message2 = Message(content, author, Instant.ofEpochSecond(2000))
 
         assertNotEquals(message1, message2)
+    }
+
+    @Test
+    fun `message can determine if it was posted before another message`() {
+        val author = User("alice")
+        val content = "Hello, world!"
+        val earlier = Instant.now().minus(1, ChronoUnit.HOURS)
+        val later = Instant.now()
+
+        val earlierMessage = Message(content, author, earlier)
+        val laterMessage = Message(content, author, later)
+
+        assertTrue(earlierMessage.isPostedBefore(laterMessage))
+        assertFalse(laterMessage.isPostedBefore(earlierMessage))
+    }
+
+    @Test
+    fun `message can determine if it was posted by a specific user`() {
+        val alice = User("alice")
+        val bob = User("bob")
+        val content = "Hello, world!"
+        val timestamp = Instant.now()
+
+        val message = Message(content, alice, timestamp)
+
+        assertTrue(message.isPostedBy(alice))
+        assertFalse(message.isPostedBy(bob))
+    }
+
+    @Test
+    fun `message can determine how old it is compared to now`() {
+        val author = User("alice")
+        val content = "Hello, world!"
+        val oneHourAgo = Instant.now().minus(1, ChronoUnit.HOURS)
+
+        val message = Message(content, author, oneHourAgo)
+
+        val ageInSeconds = message.getAgeInSeconds()
+
+        assertTrue(ageInSeconds >= 3600 && ageInSeconds < 3660) // Allow small delta for test execution time
     }
 }
