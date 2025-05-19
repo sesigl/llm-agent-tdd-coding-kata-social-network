@@ -71,4 +71,31 @@ class TimelineServiceTest {
         assertEquals(1, bobTimeline.size)
         assertEquals("Bob's message", bobTimeline[0].content)
     }
+
+    @Test
+    fun `timeline can be retrieved in reverse chronological order`() {
+        val user = User("david")
+
+        // Post messages with a small delay to ensure different timestamps
+        timelineService.postMessage(user, "First message")
+        Thread.sleep(10)
+        timelineService.postMessage(user, "Second message")
+        Thread.sleep(10)
+        timelineService.postMessage(user, "Third message")
+
+        val timeline = timelineService.getTimelineForUserInReverseChronologicalOrder(user)
+        assertEquals(3, timeline.size)
+        assertEquals("Third message", timeline[0].content)
+        assertEquals("Second message", timeline[1].content)
+        assertEquals("First message", timeline[2].content)
+    }
+
+    @Test
+    fun `empty timeline is returned for user who hasn't posted`() {
+        val user = User("emptyUser")
+
+        val timeline = timelineService.getTimelineForUserInReverseChronologicalOrder(user)
+
+        assertTrue(timeline.isEmpty())
+    }
 }
