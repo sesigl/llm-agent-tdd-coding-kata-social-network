@@ -1,24 +1,30 @@
 package org.codingkata.socialnetwork
 
+import org.codingkata.socialnetwork.domain.message.model.Message
 import java.time.Instant
 
 class TimelineService {
-    private val timelines: MutableMap<String, MutableList<Pair<String, Instant>>> = mutableMapOf()
+    private val timelines: MutableMap<String, MutableList<Message>> = mutableMapOf()
 
     fun post(
         username: String,
         message: String,
     ) {
         val userTimeline = timelines.getOrPut(username) { mutableListOf() }
-        userTimeline.add(Pair(message, Instant.now()))
+        userTimeline.add(Message(message, username, Instant.now()))
     }
 
-    fun getMessages(username: String): List<String> = timelines[username]?.map { it.first } ?: emptyList()
+    // Legacy methods for backward compatibility
+    fun getMessages(username: String): List<String> = timelines[username]?.map { it.content } ?: emptyList()
 
-    fun getMessagesWithTime(username: String): List<Pair<String, Instant>> = timelines[username]?.toList() ?: emptyList()
+    fun getMessagesWithTime(username: String): List<Pair<String, Instant>> =
+        timelines[username]?.map { Pair(it.content, it.timestamp) } ?: emptyList()
 
-    fun getTimeline(username: String): List<String> = getTimelineWithTime(username).map { it.first }
+    // New methods using domain model
+    fun getTimeline(username: String): List<String> = getTimelineMessages(username).map { it.content }
 
     fun getTimelineWithTime(username: String): List<Pair<String, Instant>> =
-        timelines[username]?.sortedByDescending { it.second } ?: emptyList()
+        getTimelineMessages(username).map { Pair(it.content, it.timestamp) }
+
+    fun getTimelineMessages(username: String): List<Message> = timelines[username]?.sortedByDescending { it.timestamp } ?: emptyList()
 }
