@@ -39,4 +39,20 @@ class TimelineService {
     }
 
     fun getFollowing(username: String): Set<String> = followingRelationships[username]?.toSet() ?: emptySet()
+
+    // Aggregated timeline
+    fun getAggregatedTimeline(username: String): List<Message> {
+        val following = getFollowing(username)
+        val aggregatedMessages = mutableListOf<Message>()
+
+        // Get messages from all followed users
+        following.forEach { followee ->
+            timelines[followee]?.let { messages ->
+                aggregatedMessages.addAll(messages)
+            }
+        }
+
+        // Sort by timestamp, newest first
+        return aggregatedMessages.sortedByDescending { it.timestamp }
+    }
 }

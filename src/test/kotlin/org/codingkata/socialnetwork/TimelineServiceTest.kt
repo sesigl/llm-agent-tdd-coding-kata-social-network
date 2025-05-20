@@ -100,4 +100,33 @@ class TimelineServiceTest {
         assertEquals(1, following.size)
         assertTrue(following.contains(followee))
     }
+
+    @Test
+    fun `should get aggregated timeline from followed users`() {
+        val timelineService = TimelineService()
+        val alice = "Alice"
+        val bob = "Bob"
+        val charlie = "Charlie"
+
+        // Alice follows Bob and Charlie
+        timelineService.follow(alice, bob)
+        timelineService.follow(alice, charlie)
+
+        // Each user posts messages
+        timelineService.post(alice, "Alice's message")
+        Thread.sleep(10)
+        timelineService.post(bob, "Bob's message")
+        Thread.sleep(10)
+        timelineService.post(charlie, "Charlie's message")
+
+        // Get Alice's aggregated timeline
+        val aggregatedTimeline = timelineService.getAggregatedTimeline(alice)
+
+        // Should contain messages from Bob and Charlie, but not Alice's own message
+        assertEquals(2, aggregatedTimeline.size)
+        assertEquals("Charlie's message", aggregatedTimeline[0].content)
+        assertEquals(charlie, aggregatedTimeline[0].author)
+        assertEquals("Bob's message", aggregatedTimeline[1].content)
+        assertEquals(bob, aggregatedTimeline[1].author)
+    }
 }
