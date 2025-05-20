@@ -16,4 +16,9 @@ class TimelineService {
     fun getMessages(username: String): List<String> = timelines[username]?.map { it.first } ?: emptyList()
 
     fun getMessagesWithTime(username: String): List<Pair<String, Instant>> = timelines[username]?.toList() ?: emptyList()
+
+    fun getTimeline(username: String): List<String> = getTimelineWithTime(username).map { it.first }
+
+    fun getTimelineWithTime(username: String): List<Pair<String, Instant>> =
+        timelines[username]?.sortedByDescending { it.second } ?: emptyList()
 }
