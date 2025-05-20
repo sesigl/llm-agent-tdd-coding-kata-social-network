@@ -83,14 +83,12 @@
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <phase>verify</phase>
                     </execution>
                     <execution>
                         <id>ktlint-format</id>
                         <goals>
                             <goal>format</goal>
                         </goals>
-                        <phase>validate</phase>
                     </execution>
                 </executions>
                 <configuration>
