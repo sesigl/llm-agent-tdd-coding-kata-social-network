@@ -5,6 +5,7 @@ import java.time.Instant
 
 class TimelineService {
     private val timelines: MutableMap<String, MutableList<Message>> = mutableMapOf()
+    private val followingRelationships: MutableMap<String, MutableSet<String>> = mutableMapOf()
 
     fun post(
         username: String,
@@ -27,4 +28,15 @@ class TimelineService {
         getTimelineMessages(username).map { Pair(it.content, it.timestamp) }
 
     fun getTimelineMessages(username: String): List<Message> = timelines[username]?.sortedByDescending { it.timestamp } ?: emptyList()
+
+    // Following functionality
+    fun follow(
+        follower: String,
+        followee: String,
+    ) {
+        val userFollowing = followingRelationships.getOrPut(follower) { mutableSetOf() }
+        userFollowing.add(followee)
+    }
+
+    fun getFollowing(username: String): Set<String> = followingRelationships[username]?.toSet() ?: emptySet()
 }

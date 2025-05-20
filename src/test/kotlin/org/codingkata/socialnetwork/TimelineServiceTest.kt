@@ -2,6 +2,7 @@ package org.codingkata.socialnetwork
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -84,5 +85,19 @@ class TimelineServiceTest {
         assertEquals(username, messages[0].author)
         assertEquals(message1, messages[1].content)
         assertEquals(username, messages[1].author)
+    }
+
+    @Test
+    fun `user should be able to follow another user`() {
+        val timelineService = TimelineService()
+        val follower = "Alice"
+        val followee = "Bob"
+
+        timelineService.follow(follower, followee)
+
+        val following = timelineService.getFollowing(follower)
+
+        assertEquals(1, following.size)
+        assertTrue(following.contains(followee))
     }
 }
