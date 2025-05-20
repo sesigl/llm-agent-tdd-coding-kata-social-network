@@ -185,4 +185,42 @@ class TimelineServiceTest {
         assertTrue(mentions.contains(bob))
         assertTrue(mentions.contains(charlie))
     }
+
+    @Test
+    fun `should find messages where a user is mentioned`() {
+        val timelineService = TimelineService()
+        val alice = "Alice"
+        val bob = "Bob"
+        val charlie = "Charlie"
+        val david = "David"
+
+        // Post messages with mentions
+        timelineService.post(alice, "Hey @Bob, how are you?")
+        Thread.sleep(10)
+        timelineService.post(bob, "Hi @Alice, I'm good. Have you seen @Charlie?")
+        Thread.sleep(10)
+        timelineService.post(charlie, "Hello @Alice and @Bob, yes I'm here!")
+        Thread.sleep(10)
+        timelineService.post(david, "No mentions here")
+
+        // Find messages where Alice is mentioned
+        val mentionsForAlice = timelineService.getMentionsForUser(alice)
+
+        // Verify messages where Alice is mentioned
+        assertEquals(2, mentionsForAlice.size)
+        assertEquals(charlie, mentionsForAlice[0].author) // Newest first
+        assertEquals(bob, mentionsForAlice[1].author)
+
+        // Find messages where Bob is mentioned
+        val mentionsForBob = timelineService.getMentionsForUser(bob)
+
+        // Verify messages where Bob is mentioned
+        assertEquals(2, mentionsForBob.size)
+        assertEquals(charlie, mentionsForBob[0].author) // Newest first
+        assertEquals(alice, mentionsForBob[1].author)
+
+        // Find messages where David is mentioned (should be empty)
+        val mentionsForDavid = timelineService.getMentionsForUser(david)
+        assertEquals(0, mentionsForDavid.size)
+    }
 }

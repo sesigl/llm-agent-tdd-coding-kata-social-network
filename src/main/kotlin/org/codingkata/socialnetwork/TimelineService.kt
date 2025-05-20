@@ -72,4 +72,21 @@ class TimelineService {
 
         return matches.map { it.groupValues[1] }.toSet()
     }
+
+    fun getMentionsForUser(username: String): List<Message> {
+        val mentionedMessages = mutableListOf<Message>()
+
+        // Look through all users' timelines for mentions
+        timelines.values.forEach { userMessages ->
+            userMessages.forEach { message ->
+                val mentions = getMentionsFromMessage(message)
+                if (mentions.contains(username)) {
+                    mentionedMessages.add(message)
+                }
+            }
+        }
+
+        // Sort by timestamp, newest first
+        return mentionedMessages.sortedByDescending { it.timestamp }
+    }
 }
