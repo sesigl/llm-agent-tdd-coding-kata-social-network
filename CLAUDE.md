@@ -35,6 +35,8 @@
   - **Services:** Operations that don't naturally belong to entities or value objects
 - **Repository naming convention:** A repository for an aggregate is named after the aggregate root (e.g., `TimelineRepository` for the `Timeline` aggregate)
 - **Refactoring approach:** When implementing DDD principles, modify existing classes to align with DDD patterns rather than creating parallel implementations. For example, refactor a `Timeline` class to be an aggregate root rather than creating a new `TimelineAggregate` class.
+- **Complete refactoring:** When refactoring to improve implementation (e.g., replacing an inline data structure with a proper class), always remove the old implementation in the same step. Never leave both old and new ways of fulfilling the same use case, as this increases complexity and maintenance burden.
+- **Information hiding:** Reduce API surface area by properly encapsulating implementation details. Only expose what clients actually need to use, hiding the rest as internal/private.
 - **Always examine the codebase completely before introducing new concepts or classes** to avoid duplication and confusion.
 
 ## Package Structure
@@ -80,6 +82,7 @@ Key guidelines:
     3. Refactor code continuously, ensuring all tests remain green.
     4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
 - Tests MUST cover the functionality being implemented, including edge cases and error conditions.
+- Tests like "check edge cases" should be avoided. Instead, tests should be very specific to a case and assert a single behavior.
 - NEVER ignore the output of the system or the tests. Logs and messages often contain CRITICAL information for debugging.
 - TEST OUTPUT MUST BE PRISTINE TO PASS. No unexpected errors or warnings in logs during test runs.
 - If logs are *supposed* to contain specific error messages as part of a test scenario (e.g., testing error handling), these MUST be captured and asserted.
@@ -93,6 +96,8 @@ Key guidelines:
         2. Testing reusable infrastructure components
         3. The logic is genuinely isolated and unlikely to be refactored between classes
     - When refactoring to move logic between classes, tests should require minimal changes
+    - When refactoring implementation details, DO NOT add new tests - existing tests should verify correctness
+    - Avoid excessive unit tests at the single class level to enable future refactoring without test maintenance burden
 - Focus on Behavior and Contracts: Good tests define and verify the expected behavior of a system, service, class, or method. They focus on the contract or public interface exposed to consumers. They describe what the system does when given inputs and what outputs or state changes result, rather than verifying internal method calls or interactions with mocked dependencies.
 - Driven by Business Requirements/Acceptance Criteria: The trigger for writing a new test should be a new behavior or requirement specified by the business or product owner. Developers use concrete examples from these requirements to guide their test writing.
 - Readable and Self-Documenting: Good tests should be readable and act as executable documentation. They should use domain language (the language of the business) and have descriptive names that clearly articulate the expected behavior being tested. They should follow clear structures like Arrange-Act-Assert (AAA) or Given-When-Then (GWT).
