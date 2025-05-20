@@ -129,4 +129,38 @@ class TimelineServiceTest {
         assertEquals("Bob's message", aggregatedTimeline[1].content)
         assertEquals(bob, aggregatedTimeline[1].author)
     }
+
+    @Test
+    fun `following edge cases should be handled correctly`() {
+        val timelineService = TimelineService()
+        val alice = "Alice"
+
+        // Self-following should be ignored
+        timelineService.follow(alice, alice)
+        val following = timelineService.getFollowing(alice)
+        assertEquals(0, following.size, "Self-following should be ignored")
+
+        // Duplicate follows should be ignored
+        val bob = "Bob"
+        timelineService.follow(alice, bob)
+        timelineService.follow(alice, bob)
+        assertEquals(1, timelineService.getFollowing(alice).size, "Duplicate follows should be ignored")
+
+        // Aggregated timeline with no followees should return empty list
+        val charlie = "Charlie" // Charlie doesn't follow anyone
+        assertEquals(
+            0,
+            timelineService.getAggregatedTimeline(charlie).size,
+            "Aggregated timeline with no followees should return empty list",
+        )
+
+        // Aggregated timeline with followees who have no posts should return empty list
+        val david = "David"
+        timelineService.follow(david, alice) // Alice has no posts yet in this test context
+        assertEquals(
+            0,
+            timelineService.getAggregatedTimeline(david).size,
+            "Aggregated timeline with followees who have no posts should return empty list",
+        )
+    }
 }

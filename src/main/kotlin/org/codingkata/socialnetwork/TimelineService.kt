@@ -34,6 +34,11 @@ class TimelineService {
         follower: String,
         followee: String,
     ) {
+        // Prevent self-following
+        if (follower == followee) {
+            return
+        }
+
         val userFollowing = followingRelationships.getOrPut(follower) { mutableSetOf() }
         userFollowing.add(followee)
     }
@@ -43,6 +48,10 @@ class TimelineService {
     // Aggregated timeline
     fun getAggregatedTimeline(username: String): List<Message> {
         val following = getFollowing(username)
+        if (following.isEmpty()) {
+            return emptyList()
+        }
+
         val aggregatedMessages = mutableListOf<Message>()
 
         // Get messages from all followed users
