@@ -37,6 +37,36 @@
 - **Refactoring approach:** When implementing DDD principles, modify existing classes to align with DDD patterns rather than creating parallel implementations. For example, refactor a `Timeline` class to be an aggregate root rather than creating a new `TimelineAggregate` class.
 - **Always examine the codebase completely before introducing new concepts or classes** to avoid duplication and confusion.
 
+## Package Structure
+
+When creating new files, **always** place them in the correct package following this structure:
+
+```
+org.codingkata.socialnetwork
+├── domain                      # Core domain model (entities, aggregates, value objects)
+│   ├── [bounded-context]       # e.g., user, timeline, post
+│   │   ├── model               # Domain model classes (entities, value objects)
+│   │   ├── repository          # Repository interfaces
+│   │   └── service             # Domain services
+├── application                 # Application services that orchestrate domain objects
+│   ├── service                 # Application services 
+│   └── dto                     # Data Transfer Objects
+├── infrastructure              # Technical implementations
+│   ├── repository              # Repository implementations
+│   └── persistence             # Database-specific code
+└── presentation                # User interface (if applicable)
+    └── controller              # API controllers
+```
+
+Key guidelines:
+- Create all new files directly in their correct package location
+- Name subdirectories using singular form (e.g., `repository` not `repositories`)
+- Group related domain concepts in bounded contexts (e.g., `user`, `timeline`, `post`)
+- Keep domain logic free from application or infrastructure dependencies
+- Domain model classes should never import from application or infrastructure packages
+- When naming files, include their role in the name (e.g., `UserRepository.kt`, not just `User.kt`)
+- Tests should mirror the package structure of the code they test
+
 # Getting Help & Clarification
 
 - ALWAYS ask for clarification from the human rather than making assumptions, especially if a requirement in `spec.md` is ambiguous or conflicts with rules in this `Claude.md`.

@@ -2,20 +2,24 @@ Find the spec document at `spec.md` and create a `prompt_plan.md` file that brea
 project into phases and specific coding tasks. Each task should have a clear prompt that:
 
 1. States the specific goal
-2. Defines exact deliverables (files/functions/classes to create)
+2. Defines exact deliverables (files/functions/classes to create with their **COMPLETE package paths**)
 3. Specifies the programming language (Kotlin) and relevant technologies
 4. Provides sufficient context for implementation
 
 Format the prompt_plan.md as a structured Markdown document with:
 - Project title and introduction
+- **Package structure definition following DDD principles**
+- Identification of bounded contexts and their relationships
 - High-level phases
 - Detailed task breakdown for each phase
-- Specific prompts for implementing each task
+- Specific prompts for implementing each task (always with complete package paths)
 - Dedicated refactoring steps integrated between implementation tasks
 
 IMPORTANT GUIDELINES:
 
 1. Use Domain-Driven Design (DDD) tactical patterns throughout the plan:
+   - **Proper package structure:** Always specify the complete package path for every file, following the structure in CLAUDE.md
+   - **Bounded contexts:** Identify and organize related domain concepts into coherent bounded contexts
    - Value Objects for domain concepts (avoid primitive obsession)
    - Rich Domain Models with behavior, not just data
    - Factory methods/classes for complex object creation
@@ -387,6 +391,9 @@ This blueprint offers a clear roadmap with progressively smaller tasks. Each pro
 
 </EXAMPLE-PROMPT-PLAN-MD>
 
-Your ultimate goal should be to create a `prompt_plan.md` in the root folder of the project. Don't analyze any files besides
-the `spec.md` document.
+Your ultimate goal should be to create a `prompt_plan.md` in the root folder of the project. 
+
+IMPORTANT: Make sure the prompt plan defines a clear package structure upfront (in a dedicated section) and that EVERY file creation prompt includes the full, correct package path. This ensures files are created directly in the right location, preventing the need for later refactoring of package structures.
+
+Don't analyze any files besides the `spec.md` document.
 
