@@ -163,4 +163,26 @@ class TimelineServiceTest {
             "Aggregated timeline with followees who have no posts should return empty list",
         )
     }
+
+    @Test
+    fun `should detect mentions in message content`() {
+        val timelineService = TimelineService()
+        val alice = "Alice"
+        val bob = "Bob"
+        val charlie = "Charlie"
+
+        // Post a message with mentions
+        timelineService.post(alice, "Hey @Bob, have you talked to @Charlie recently?")
+
+        // Get the message
+        val message = timelineService.getTimelineMessages(alice).first()
+
+        // Get the mentions from the message
+        val mentions = timelineService.getMentionsFromMessage(message)
+
+        // Verify mentions were detected
+        assertEquals(2, mentions.size)
+        assertTrue(mentions.contains(bob))
+        assertTrue(mentions.contains(charlie))
+    }
 }

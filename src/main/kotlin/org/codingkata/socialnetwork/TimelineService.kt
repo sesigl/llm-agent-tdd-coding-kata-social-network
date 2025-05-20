@@ -64,4 +64,12 @@ class TimelineService {
         // Sort by timestamp, newest first
         return aggregatedMessages.sortedByDescending { it.timestamp }
     }
+
+    // Mention functionality
+    fun getMentionsFromMessage(message: Message): Set<String> {
+        val mentionRegex = Regex("@([A-Za-z0-9_]+)")
+        val matches = mentionRegex.findAll(message.content)
+
+        return matches.map { it.groupValues[1] }.toSet()
+    }
 }
