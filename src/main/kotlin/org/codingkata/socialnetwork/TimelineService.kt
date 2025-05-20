@@ -89,4 +89,12 @@ class TimelineService {
         // Sort by timestamp, newest first
         return mentionedMessages.sortedByDescending { it.timestamp }
     }
+
+    // Link detection functionality
+    fun getLinksFromMessage(message: Message): Set<String> {
+        val linkRegex = Regex("(https?://[^\\s]+)")
+        val matches = linkRegex.findAll(message.content)
+
+        return matches.map { it.groupValues[1] }.toSet()
+    }
 }

@@ -223,4 +223,24 @@ class TimelineServiceTest {
         val mentionsForDavid = timelineService.getMentionsForUser(david)
         assertEquals(0, mentionsForDavid.size)
     }
+
+    @Test
+    fun `should detect links in message content`() {
+        val timelineService = TimelineService()
+        val alice = "Alice"
+
+        // Post a message with links
+        timelineService.post(alice, "Check out https://example.com and http://test.org")
+
+        // Get the message
+        val message = timelineService.getTimelineMessages(alice).first()
+
+        // Get the links from the message
+        val links = timelineService.getLinksFromMessage(message)
+
+        // Verify links were detected
+        assertEquals(2, links.size)
+        assertTrue(links.contains("https://example.com"))
+        assertTrue(links.contains("http://test.org"))
+    }
 }
