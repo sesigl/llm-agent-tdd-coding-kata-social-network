@@ -31,7 +31,7 @@ gemini_evaluate() {
 # 1. Get all commit messages from the TCR run (everything prefixed with [TCR])
 if [ -n "$BRANCH_NAME" ]; then
   echo "Getting logs from branch: $BRANCH_NAME"
-  TCR_LOG=$(git log "$BRANCH_NAME" --grep="^\[TCR\]" --date=iso)
+  TCR_LOG=$(git log "$BRANCH_NAME" --date=iso)
 else
   # fail, branch name is required
   echo "Error: Branch name is required. Usage: $0 <branch_name>" >&2
