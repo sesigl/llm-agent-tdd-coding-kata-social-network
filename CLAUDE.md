@@ -15,12 +15,13 @@
 # TCR Development Approach
 
 - **Progressive Implementation:** Start with the simplest possible implementation that satisfies the requirements.
-- **Prioritize Functionality First:** Focus on implementing complete user stories or use cases at the application service level before refactoring to sophisticated domain models.
 - **Primitive Values First:** Start with primitive types (String, Int, etc.) in your initial implementation. Only introduce value objects, entities, and other domain model refinements AFTER the basic functionality is working and tested.
 - **Respond to TCR Failures:** When a TCR cycle fails (reverts your changes), ALWAYS reduce the scope of your changes in the next attempt. Break the change into smaller, more focused changes that can be independently verified.
 - **TCR Revert Detection:** Pay close attention to revert messages in the TCR output. When you see "HEAD is now at [commit] [TCR RESET]", it indicates your changes were reverted. In response, you MUST take smaller steps in your next attempt.
 - **Incremental Modeling:** Do not try to create a sophisticated domain model upfront. Start with simple data structures and gradually evolve them as the requirements become clearer and tests validate their behavior.
 - **Avoid Premature Abstraction:** Implement concrete functionality first. Only create abstractions when you have multiple concrete implementations or when the abstraction is directly required by the current task.
+
+Find more details about general testing philosophy in @.claude/docs/tdd.md
 
 # Kotlin & Spring Boot Specifics
 
