@@ -12,6 +12,16 @@
 - NEVER name things (variables, classes, methods, files) with prefixes or suffixes like 'improved', 'new', 'enhanced', 'V2', 'temp', etc. All naming MUST be evergreen and reflect function, not history.
 - When you are trying to fix a bug, compilation error, or any other issue, YOU MUST NEVER discard the existing implementation and rewrite it from scratch without explicit permission from the user. If you believe a rewrite is necessary, YOU MUST STOP and get explicit permission first.
 
+# TCR Development Approach
+
+- **Progressive Implementation:** Start with the simplest possible implementation that satisfies the requirements.
+- **Prioritize Functionality First:** Focus on implementing complete user stories or use cases at the application service level before refactoring to sophisticated domain models.
+- **Primitive Values First:** Start with primitive types (String, Int, etc.) in your initial implementation. Only introduce value objects, entities, and other domain model refinements AFTER the basic functionality is working and tested.
+- **Respond to TCR Failures:** When a TCR cycle fails (reverts your changes), ALWAYS reduce the scope of your changes in the next attempt. Break the change into smaller, more focused changes that can be independently verified.
+- **TCR Revert Detection:** Pay close attention to revert messages in the TCR output. When you see "HEAD is now at [commit] [TCR RESET]", it indicates your changes were reverted. In response, you MUST take smaller steps in your next attempt.
+- **Incremental Modeling:** Do not try to create a sophisticated domain model upfront. Start with simple data structures and gradually evolve them as the requirements become clearer and tests validate their behavior.
+- **Avoid Premature Abstraction:** Implement concrete functionality first. Only create abstractions when you have multiple concrete implementations or when the abstraction is directly required by the current task.
+
 # Kotlin & Spring Boot Specifics
 
 - **Immutability:** Always prefer `val` over `var`. Collections should be read-only by default where possible (e.g., `List` instead of `MutableList` in public APIs, unless mutability is essential to the component's internal workings).
@@ -77,10 +87,10 @@ Key guidelines:
 # Testing
 
 - **TDD (Test-Driven Development) + TCR (Test commit revert) is MANDATORY:**
-    1. Write tests *before* writing the implementation code.
-    2. Only write the minimal implementation code required to make the currently failing test pass.
-    3. Refactor code continuously, ensuring all tests remain green.
-    4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
+  1. Write tests *before* writing the implementation code.
+  2. Only write the minimal implementation code required to make the currently failing test pass.
+  3. Refactor code continuously, ensuring all tests remain green.
+  4. `./tcr.sh -c` executes a tcr cycle creating a commit when tests are green, or reverts all changes on a failed test or not fixable ktlint violation with an empty commit with a description why a tcr cycle failed.
 - Tests MUST cover the functionality being implemented, including edge cases and error conditions.
 - Tests like "check edge cases" should be avoided. Instead, tests should be very specific to a case and assert a single behavior.
 - NEVER ignore the output of the system or the tests. Logs and messages often contain CRITICAL information for debugging.
@@ -88,16 +98,16 @@ Key guidelines:
 - If logs are *supposed* to contain specific error messages as part of a test scenario (e.g., testing error handling), these MUST be captured and asserted.
 - DO NOT add meaningless comments in tests like "// Arrange", "// Act", "// Assert". Let the test code speak for itself through clear structure and naming.
 - **Test Positioning and Scope:**
-    - Place the majority of tests at the service/application layer rather than at the individual class level
-    - Tests should primarily focus on behaviors and use cases rather than implementation details
-    - Minimize tests that are tightly coupled to implementation details, as these make refactoring difficult
-    - Lower-level tests are appropriate only when:
-        1. Testing complex algorithms with many edge cases
-        2. Testing reusable infrastructure components
-        3. The logic is genuinely isolated and unlikely to be refactored between classes
-    - When refactoring to move logic between classes, tests should require minimal changes
-    - When refactoring implementation details, DO NOT add new tests - existing tests should verify correctness
-    - Avoid excessive unit tests at the single class level to enable future refactoring without test maintenance burden
+  - Place the majority of tests at the service/application layer rather than at the individual class level
+  - Tests should primarily focus on behaviors and use cases rather than implementation details
+  - Minimize tests that are tightly coupled to implementation details, as these make refactoring difficult
+  - Lower-level tests are appropriate only when:
+    1. Testing complex algorithms with many edge cases
+    2. Testing reusable infrastructure components
+    3. The logic is genuinely isolated and unlikely to be refactored between classes
+  - When refactoring to move logic between classes, tests should require minimal changes
+  - When refactoring implementation details, DO NOT add new tests - existing tests should verify correctness
+  - Avoid excessive unit tests at the single class level to enable future refactoring without test maintenance burden
 - Focus on Behavior and Contracts: Good tests define and verify the expected behavior of a system, service, class, or method. They focus on the contract or public interface exposed to consumers. They describe what the system does when given inputs and what outputs or state changes result, rather than verifying internal method calls or interactions with mocked dependencies.
 - Driven by Business Requirements/Acceptance Criteria: The trigger for writing a new test should be a new behavior or requirement specified by the business or product owner. Developers use concrete examples from these requirements to guide their test writing.
 - Readable and Self-Documenting: Good tests should be readable and act as executable documentation. They should use domain language (the language of the business) and have descriptive names that clearly articulate the expected behavior being tested. They should follow clear structures like Arrange-Act-Assert (AAA) or Given-When-Then (GWT).
